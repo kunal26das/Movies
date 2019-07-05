@@ -9,8 +9,10 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 import static kudos26.aboutmovies.Constants.KEY_ID;
+import static kudos26.aboutmovies.Constants.KEY_POPULARITY;
 import static kudos26.aboutmovies.Constants.KEY_POSTER_PATH;
 import static kudos26.aboutmovies.Constants.KEY_TITLE;
+import static kudos26.aboutmovies.Constants.KEY_VOTE_AVERAGE;
 import static kudos26.aboutmovies.Constants.TABLE_MOVIE;
 
 @Entity(tableName = TABLE_MOVIE)
@@ -45,22 +47,22 @@ public class MovieEntry {
     @NonNull
     @SerializedName(KEY_VOTE_COUNT)
     @ColumnInfo(name = KEY_VOTE_COUNT)
-    private Integer mVoteCount;
+    private Integer mVoteCount;*/
 
     @NonNull
     @SerializedName(KEY_VOTE_AVERAGE)
     @ColumnInfo(name = KEY_VOTE_AVERAGE)
     private Float mVoteAverage;
 
-    @NonNull
+    /*@NonNull
     @SerializedName(KEY_VIDEO)
     @ColumnInfo(name = KEY_VIDEO)
-    private Boolean mVideo;
+    private Boolean mVideo;*/
 
     @NonNull
     @SerializedName(KEY_POPULARITY)
     @ColumnInfo(name = KEY_POPULARITY)
-    private Float mPopularity;*/
+    private Float mPopularity;
 
     @Nullable
     @SerializedName(KEY_POSTER_PATH)
@@ -87,33 +89,16 @@ public class MovieEntry {
     @ColumnInfo(name = KEY_OVERVIEW)
     private String mOverview;*/
 
-    public MovieEntry(@NonNull Integer mId, @NonNull String mTitle, @NonNull String mPosterPath) {
+    public MovieEntry(@NonNull Integer mId, @NonNull String mTitle, @NonNull Float mVoteAverage, @NonNull Float mPopularity, @NonNull String mPosterPath) {
         this.mId = mId;
         this.mTitle = mTitle;
         /*this.mOriginalTitle = mOriginalTitle;
         this.mReleaseDate = mReleaseDate;
         this.mAdult = mAdult;
-        this.mVoteCount = mVoteCount;
+        this.mVoteCount = mVoteCount;*/
         this.mVoteAverage = mVoteAverage;
-        this.mVideo = mVideo;
-        this.mPopularity = mPopularity;*/
-        this.mPosterPath = mPosterPath;
-        /*this.mOriginalLanguage = mOriginalLanguage;
-        this.mGenreIds = mGenreIds;
-        this.mBackdropPath = mBackdropPath;
-        this.mOverview = mOverview;*/
-    }
-
-    public MovieEntry(@NonNull Integer mId, @NonNull String mTitle, @NonNull String mOriginalTitle, @NonNull String mReleaseDate, @NonNull Boolean mAdult, @NonNull Integer mVoteCount, @NonNull Float mVoteAverage, @NonNull Boolean mVideo, @NonNull Float mPopularity, @Nullable String mPosterPath, @NonNull String mOriginalLanguage, @NonNull String mGenreIds, @Nullable String mBackdropPath, @NonNull String mOverview) {
-        this.mId = mId;
-        this.mTitle = mTitle;
-        /*this.mOriginalTitle = mOriginalTitle;
-        this.mReleaseDate = mReleaseDate;
-        this.mAdult = mAdult;
-        this.mVoteCount = mVoteCount;
-        this.mVoteAverage = mVoteAverage;
-        this.mVideo = mVideo;
-        this.mPopularity = mPopularity;*/
+        /*this.mVideo = mVideo;*/
+        this.mPopularity = mPopularity;
         this.mPosterPath = mPosterPath;
         /*this.mOriginalLanguage = mOriginalLanguage;
         this.mGenreIds = mGenreIds;
@@ -127,10 +112,10 @@ public class MovieEntry {
         /*this.mOriginalTitle = movieObject.getOriginalTitle();
         this.mReleaseDate = movieObject.getReleaseDate();
         this.mAdult = movieObject.getAdult();
-        this.mVoteCount = movieObject.getVoteCount();
+        this.mVoteCount = movieObject.getVoteCount();*/
         this.mVoteAverage = movieObject.getVoteAverage();
-        this.mVideo = movieObject.getVideo();
-        this.mPopularity = movieObject.getPopularity();*/
+        /*this.mVideo = movieObject.getVideo();*/
+        this.mPopularity = movieObject.getPopularity();
         this.mPosterPath = movieObject.getPosterPath();
         /*this.mGenreIds = movieObject.getGenreIds().toString();
         this.mBackdropPath = movieObject.getBackdropPath();
@@ -165,23 +150,23 @@ public class MovieEntry {
     @NonNull
     public Integer getVoteCount() {
         return mVoteCount;
-    }
+    }*/
 
     @NonNull
     public Float getVoteAverage() {
         return mVoteAverage;
     }
 
-    @NonNull
+    /*@NonNull
     public Boolean getVideo() {
         return mVideo;
-    }
+    }*/
 
     @NonNull
     public Float getPopularity() {
         return mPopularity;
     }
-*/
+
     @Nullable
     public String getPosterPath() {
         return mPosterPath;
@@ -229,19 +214,19 @@ public class MovieEntry {
 
     public void setmVoteCount(@NonNull Integer mVoteCount) {
         this.mVoteCount = mVoteCount;
-    }
+    }*/
 
     public void setmVoteAverage(@NonNull Float mVoteAverage) {
         this.mVoteAverage = mVoteAverage;
     }
 
-    public void setmVideo(@NonNull Boolean mVideo) {
+    /*public void setmVideo(@NonNull Boolean mVideo) {
         this.mVideo = mVideo;
-    }
+    }*/
 
     public void setmPopularity(@NonNull Float mPopularity) {
         this.mPopularity = mPopularity;
-    }*/
+    }
 
     public void setmPosterPath(@Nullable String mPosterPath) {
         this.mPosterPath = mPosterPath;

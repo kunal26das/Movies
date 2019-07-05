@@ -34,9 +34,9 @@ public abstract class MovieDatabase extends RoomDatabase {
     private static RoomDatabase.Callback MovieFetchCallback = new RoomDatabase.Callback() {
 
         @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-            new MovieFetchTask(MOVIE_DATABASE_INSTANCE).execute();
+        public void onOpen(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+            super.onOpen(supportSQLiteDatabase);
+            new FetchTopRatedMoviesTask(MOVIE_DATABASE_INSTANCE).execute(1);
         }
     };
 
@@ -47,8 +47,8 @@ public abstract class MovieDatabase extends RoomDatabase {
                     MOVIE_DATABASE_INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             MovieDatabase.class, DATABASE_MOVIE)
                             .fallbackToDestructiveMigration()
-                            .addCallback(MovieFetchCallback)
                             .allowMainThreadQueries()
+                            .addCallback(MovieFetchCallback)
                             .build();
                 }
             }
@@ -56,18 +56,60 @@ public abstract class MovieDatabase extends RoomDatabase {
         return MOVIE_DATABASE_INSTANCE;
     }
 
-    private static class MovieFetchTask extends AsyncTask<Void, Void, Void> {
+    public void fetchPopularMovies(int page) {
+        new FetchTopRatedMoviesTask(MOVIE_DATABASE_INSTANCE).execute(page);
+    }
+
+    public void fetchTopRatedMovies(int page) {
+        new FetchPopularMoviesTask(MOVIE_DATABASE_INSTANCE).execute(page);
+    }
+
+    private static class FetchTopRatedMoviesTask extends AsyncTask<Integer, Void, Void> {
 
         private final MovieDao mDao;
 
-        MovieFetchTask(MovieDatabase movieDatabase) {
+        FetchTopRatedMoviesTask(MovieDatabase movieDatabase) {
             mDao = movieDatabase.movieDao();
         }
 
         @Override
-        protected Void doInBackground(final Void... params) {
+        protected Void doInBackground(final Integer... params) {
             MovieApi movieApi = MovieApiClient.getClient().create(MovieApi.class);
-            Call<ApiResponse> movieJsonResponseCall = movieApi.getPopularMovies(API_KEY, LANGUAGE, String.valueOf(1));
+            Call<ApiResponse> movieJsonResponseCall = movieApi.getTopRatedMovies(API_KEY, LANGUAGE, String.valueOf(params[0]));
+            movieJsonResponseCall.enqueue(new retrofit2.Callback<ApiResponse>() {
+                @Override
+                @EverythingIsNonNull
+                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                    ApiResponse responseBody = response.body();
+                    if (responseBody != null) {
+                        List<MovieObject> movieArray = responseBody.getResults();
+                        for (MovieObject movieObject : movieArray) {
+                            mDao.insertMovie(new MovieEntry(movieObject));
+                        }
+                    }
+                }
+
+                @Override
+                @EverythingIsNonNull
+                public void onFailure(Call<ApiResponse> call, Throwable t) {
+                }
+            });
+            return null;
+        }
+    }
+
+    private static class FetchPopularMoviesTask extends AsyncTask<Integer, Void, Void> {
+
+        private final MovieDao mDao;
+
+        FetchPopularMoviesTask(MovieDatabase movieDatabase) {
+            mDao = movieDatabase.movieDao();
+        }
+
+        @Override
+        protected Void doInBackground(final Integer... params) {
+            MovieApi movieApi = MovieApiClient.getClient().create(MovieApi.class);
+            Call<ApiResponse> movieJsonResponseCall = movieApi.getPopularMovies(API_KEY, LANGUAGE, String.valueOf(params[0]));
             movieJsonResponseCall.enqueue(new retrofit2.Callback<ApiResponse>() {
                 @Override
                 @EverythingIsNonNull

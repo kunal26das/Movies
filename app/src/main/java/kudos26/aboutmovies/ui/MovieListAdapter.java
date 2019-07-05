@@ -69,6 +69,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             Picasso.get()
                     .load(imageUrl)
                     .resize(0, 812)
+                    .placeholder(R.drawable.ic_launcher_background)
                     .into(mMoviePosterImageView);
         }
     }
