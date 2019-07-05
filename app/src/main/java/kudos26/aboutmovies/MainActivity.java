@@ -30,23 +30,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
         }
 
         RecyclerView recyclerView = findViewById(R.id.movie_list_recycler_view);
         final MovieListAdapter movieListAdapter = new MovieListAdapter(this);
-        recyclerView.setAdapter(movieListAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setAdapter(movieListAdapter);
 
         mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         mMovieViewModel.getMovieLiveData().observe(this, new Observer<List<MovieEntry>>() {

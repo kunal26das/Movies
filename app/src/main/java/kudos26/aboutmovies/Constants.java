@@ -18,9 +18,7 @@ public class Constants {
     public static final String KEY_OVERVIEW = "overview";
 
     public static final String TABLE_MOVIE = "movie_table";
-    public static final String DATABASE_MOVIE = "movie_database";
 
-    public static final String BASE_URL = "https://api.themoviedb.org/3/";
-    public static final String API_KEY_QUERY = "api_key";
     public static final String API_KEY = "27348b00a69a63a9825b9ec3532f2246";
+    public static final String LANGUAGE = "en-US";
 }

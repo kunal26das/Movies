@@ -5,11 +5,15 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-import static kudos26.aboutmovies.Constants.API_KEY_QUERY;
-
 public interface MovieApi {
 
+    String QUERY_PAGE = "page";
+    String QUERY_API_KEY = "api_key";
+    String QUERY_LANGUAGE = "language";
+
     @GET("movie/popular")
-    Call<ApiResponse> getPopularMovies(@Query(API_KEY_QUERY) String apiKey);
+    Call<ApiResponse> getPopularMovies(@Query(QUERY_API_KEY) String apiKey,
+                                       @Query(QUERY_LANGUAGE) String language,
+                                       @Query(QUERY_PAGE) String page);
 
 }

@@ -101,17 +101,9 @@ public class MovieObject {
         return mId;
     }
 
-    public void setId(@NonNull Integer mId) {
-        this.mId = mId;
-    }
-
     @NonNull
     public String getTitle() {
         return mTitle;
-    }
-
-    public void setTitle(@NonNull String mTitle) {
-        this.mTitle = mTitle;
     }
 
     @NonNull
@@ -119,17 +111,9 @@ public class MovieObject {
         return mOriginalTitle;
     }
 
-    public void setOriginalTitle(@NonNull String mOriginalTitle) {
-        this.mOriginalTitle = mOriginalTitle;
-    }
-
     @NonNull
     public String getReleaseDate() {
         return mReleaseDate;
-    }
-
-    public void setReleaseDate(@NonNull String mReleaseDate) {
-        this.mReleaseDate = mReleaseDate;
     }
 
     @NonNull
@@ -137,17 +121,9 @@ public class MovieObject {
         return mAdult;
     }
 
-    public void setAdult(@NonNull Boolean mAdult) {
-        this.mAdult = mAdult;
-    }
-
     @NonNull
     public Integer getVoteCount() {
         return mVoteCount;
-    }
-
-    public void setVoteCount(@NonNull Integer mVoteCount) {
-        this.mVoteCount = mVoteCount;
     }
 
     @NonNull
@@ -155,17 +131,9 @@ public class MovieObject {
         return mVoteAverage;
     }
 
-    public void setVoteAverage(@NonNull Float mVoteAverage) {
-        this.mVoteAverage = mVoteAverage;
-    }
-
     @NonNull
     public Boolean getVideo() {
         return mVideo;
-    }
-
-    public void setVideo(@NonNull Boolean mVideo) {
-        this.mVideo = mVideo;
     }
 
     @NonNull
@@ -173,17 +141,9 @@ public class MovieObject {
         return mPopularity;
     }
 
-    public void setPopularity(@NonNull Float mPopularity) {
-        this.mPopularity = mPopularity;
-    }
-
     @Nullable
     public String getPosterPath() {
         return mPosterPath;
-    }
-
-    public void setPosterPath(@Nullable String mPosterPath) {
-        this.mPosterPath = mPosterPath;
     }
 
     @NonNull
@@ -191,17 +151,9 @@ public class MovieObject {
         return mOriginalLanguage;
     }
 
-    public void setOriginalLanguage(@NonNull String mOriginalLanguage) {
-        this.mOriginalLanguage = mOriginalLanguage;
-    }
-
     @NonNull
     public List<Integer> getGenreIds() {
         return mGenreIds;
-    }
-
-    public void setGenreIds(@NonNull List<Integer> mGenreIds) {
-        this.mGenreIds = mGenreIds;
     }
 
     @Nullable
@@ -209,16 +161,8 @@ public class MovieObject {
         return mBackdropPath;
     }
 
-    public void setBackdropPath(@Nullable String mBackdropPath) {
-        this.mBackdropPath = mBackdropPath;
-    }
-
     @NonNull
     public String getOverview() {
         return mOverview;
-    }
-
-    public void setOverview(@NonNull String mOverview) {
-        this.mOverview = mOverview;
     }
 }
