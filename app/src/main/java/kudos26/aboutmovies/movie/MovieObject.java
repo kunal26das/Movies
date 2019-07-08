@@ -1,4 +1,4 @@
-package kudos26.aboutmovies.pojo;
+package kudos26.aboutmovies.movie;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

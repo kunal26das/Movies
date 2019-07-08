@@ -1,4 +1,4 @@
-package kudos26.aboutmovies.ui;
+package kudos26.aboutmovies.movie;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;

@@ -1,6 +1,7 @@
 package kudos26.aboutmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,32 +25,37 @@ import com.squareup.picasso.Picasso;
 import java.util.Collections;
 import java.util.List;
 
-import kudos26.aboutmovies.pojo.MovieEntry;
-import kudos26.aboutmovies.ui.MovieScrollListener;
-import kudos26.aboutmovies.ui.MovieViewModel;
+import kudos26.aboutmovies.movie.MovieEntity;
+import kudos26.aboutmovies.movie.MovieScrollListener;
+import kudos26.aboutmovies.movie.MovieViewModel;
 
+import static kudos26.aboutmovies.Constants.KEY_ID;
 import static kudos26.aboutmovies.Constants.POPULAR_MOVIES;
 import static kudos26.aboutmovies.Constants.TOP_RATED_MOVIES;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean mTwoPane;
+    private static final String STRING_POPULAR_MOVIES = "Popular Movies";
+    private static final String STRING_FAVORITE_MOVIES = "Favorite Movies";
     private MovieViewModel mMovieViewModel;
     private MovieListAdapter mMovieListAdapter;
     private RecyclerView mMovieListRecyclerView;
     private GridLayoutManager mGridLayoutManager;
+    private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
+    private static final String BASE_URL_IMAGE = "http://image.tmdb.org/t/p/original";
+    private static boolean mTwoPane;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbar.setTitle(STRING_POPULAR_MOVIES);
+        setSupportActionBar(mToolbar);
 
-        if (findViewById(R.id.movie_detail_container) != null) {
-            mTwoPane = true;
-        }
+        mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
         mMovieListAdapter = new MovieListAdapter(this);
         mGridLayoutManager = new GridLayoutManager(this, 2);
@@ -59,19 +65,20 @@ public class MainActivity extends AppCompatActivity {
         mMovieListRecyclerView.setAdapter(mMovieListAdapter);
 
         mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        mMovieViewModel.getMovieLiveData(POPULAR_MOVIES).observe(this, new Observer<List<MovieEntry>>() {
+        mMovieViewModel.getMovieLiveData(POPULAR_MOVIES).observe(this, new Observer<List<MovieEntity>>() {
             @Override
-            public void onChanged(@Nullable final List<MovieEntry> movieEntryList) {
-                mMovieListAdapter.setMovieList(movieEntryList);
+            public void onChanged(@Nullable final List<MovieEntity> movies) {
+                mMovieListAdapter.setMovies(movies);
             }
         });
 
-    }
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGridLayoutManager.scrollToPosition(0);
+            }
+        });
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sort_menu, menu);
-        return true;
     }
 
     @Override
@@ -79,36 +86,39 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.popular: {
-                mMovieViewModel.getMovieLiveData(POPULAR_MOVIES).observe(this, new Observer<List<MovieEntry>>() {
+                mToolbar.setTitle(STRING_POPULAR_MOVIES);
+                mMovieViewModel.getMovieLiveData(POPULAR_MOVIES).observe(this, new Observer<List<MovieEntity>>() {
                     @Override
-                    public void onChanged(@Nullable final List<MovieEntry> movieEntryList) {
-                        mMovieListAdapter.setMovieList(movieEntryList);
+                    public void onChanged(@Nullable final List<MovieEntity> movieEntityList) {
+                        mMovieListAdapter.setMovies(movieEntityList);
                     }
                 });
                 mMovieListRecyclerView.addOnScrollListener(new MovieScrollListener(mGridLayoutManager) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        mMovieViewModel.fetchPopularMovies(page + 1);
+                        mMovieViewModel.getMoviesPage(POPULAR_MOVIES, page + 1);
                     }
                 });
                 return true;
             }
             case R.id.top_rated: {
-                mMovieViewModel.getMovieLiveData(TOP_RATED_MOVIES).observe(this, new Observer<List<MovieEntry>>() {
+                mToolbar.setTitle(STRING_TOP_RATED_MOVIES);
+                mMovieViewModel.getMovieLiveData(TOP_RATED_MOVIES).observe(this, new Observer<List<MovieEntity>>() {
                     @Override
-                    public void onChanged(@Nullable final List<MovieEntry> movieEntryList) {
-                        mMovieListAdapter.setMovieList(movieEntryList);
+                    public void onChanged(@Nullable final List<MovieEntity> movieEntityList) {
+                        mMovieListAdapter.setMovies(movieEntityList);
                     }
                 });
                 mMovieListRecyclerView.addOnScrollListener(new MovieScrollListener(mGridLayoutManager) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        mMovieViewModel.fetchTopRatedMovies(page + 1);
+                        mMovieViewModel.getMoviesPage(TOP_RATED_MOVIES, page + 1);
                     }
                 });
                 return true;
             }
             case R.id.favorites: {
+                mToolbar.setTitle(STRING_FAVORITE_MOVIES);
                 return true;
             }
             default: {
@@ -117,29 +127,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sort_menu, menu);
+        return true;
+    }
+
     public static class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
 
-        private static final String BASE_URL_IMAGE = "http://image.tmdb.org/t/p/w185";
         private final LayoutInflater mLayoutInflater;
-        private List<MovieEntry> mMovieEntryList = Collections.emptyList();
+        private List<MovieEntity> mMovies = Collections.emptyList();
 
-        public MovieListAdapter(Context context) {
+        MovieListAdapter(Context context) {
             mLayoutInflater = LayoutInflater.from(context);
         }
 
         @Override
         public int getItemCount() {
-            return mMovieEntryList.size();
+            return mMovies.size();
         }
 
-        public void setMovieList(List<MovieEntry> movieEntryList) {
-            mMovieEntryList = movieEntryList;
+        void setMovies(List<MovieEntity> movies) {
+            mMovies = movies;
             notifyDataSetChanged();
         }
 
         @Override
         public void onBindViewHolder(@NonNull MovieHolder movieHolder, int position) {
-            movieHolder.updateMovie(mMovieEntryList.get(position));
+            movieHolder.updateMovie(mMovies.get(position));
         }
 
         @Override
@@ -149,22 +164,37 @@ public class MainActivity extends AppCompatActivity {
             return new MovieHolder(movie);
         }
 
-        public class MovieHolder extends RecyclerView.ViewHolder {
+        class MovieHolder extends RecyclerView.ViewHolder {
 
-            private TextView mMovieTitleTextView;
-            private ImageView mMoviePosterImageView;
+            int mMovieId;
+            TextView mMovieTitleTextView;
+            ImageView mMoviePosterImageView;
 
-            public MovieHolder(View view) {
+            MovieHolder(View view) {
                 super(view);
-                mMoviePosterImageView = view.findViewById(R.id.movie_poster_image_view);
                 mMovieTitleTextView = view.findViewById(R.id.movie_title_text_view);
+                mMoviePosterImageView = view.findViewById(R.id.movie_poster_image_view);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mTwoPane) {
+
+                        } else {
+                            Context context = view.getContext();
+                            Intent intent = new Intent(context, MovieDetailActivity.class);
+                            intent.putExtra(KEY_ID, mMovieId);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
             }
 
-            public void updateMovie(MovieEntry movieEntry) {
-                String imageUrl = BASE_URL_IMAGE + movieEntry.getPosterPath();
-                mMovieTitleTextView.setText(movieEntry.getTitle());
+            void updateMovie(MovieEntity movie) {
+                mMovieId = movie.getId();
+                mMovieTitleTextView.setText(movie.getTitle());
+                String moviePosterPath = movie.getPosterPath();
                 Picasso.get()
-                        .load(imageUrl)
+                        .load(BASE_URL_IMAGE + moviePosterPath)
                         .resize(0, 812)
                         .placeholder(R.drawable.ic_launcher_background)
                         .into(mMoviePosterImageView);

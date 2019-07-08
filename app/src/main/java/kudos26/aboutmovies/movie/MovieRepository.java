@@ -1,12 +1,10 @@
-package kudos26.aboutmovies.ui;
+package kudos26.aboutmovies.movie;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
-
-import kudos26.aboutmovies.pojo.MovieEntry;
 
 import static kudos26.aboutmovies.Constants.POPULAR_MOVIES;
 import static kudos26.aboutmovies.Constants.TOP_RATED_MOVIES;
@@ -15,15 +13,15 @@ class MovieRepository {
 
     private static MovieDao mMovieDao;
     private MovieDatabase mMovieDatabase;
-    private LiveData<List<MovieEntry>> mMovieEntries;
+    //private LiveData<List<MovieEntity>> mMovieEntries;
 
     MovieRepository(Application application) {
         mMovieDatabase = MovieDatabase.getDatabase(application);
         mMovieDao = mMovieDatabase.movieDao();
-        mMovieEntries = mMovieDao.getPopularMovies();
+        //mMovieEntries = mMovieDao.getPopularMovies();
     }
 
-    LiveData<List<MovieEntry>> getMovieEntries(int sortCriteria) {
+    LiveData<List<MovieEntity>> getMovies(int sortCriteria) {
         switch (sortCriteria) {
             case POPULAR_MOVIES: {
                 return mMovieDao.getPopularMovies();
@@ -37,11 +35,12 @@ class MovieRepository {
         }
     }
 
-    public void fetchPopularMovies(int page) {
-        mMovieDatabase.fetchPopularMovies(page);
+    MovieEntity getMovie(int id) {
+        return mMovieDatabase.getMovieEntry(id);
     }
 
-    public void fetchTopRatedMovies(int page) {
-        mMovieDatabase.fetchTopRatedMovies(page);
+    void getMoviesPage(int sortCriteria, int page) {
+        mMovieDatabase.getMoviesPage(sortCriteria, page);
     }
+
 }

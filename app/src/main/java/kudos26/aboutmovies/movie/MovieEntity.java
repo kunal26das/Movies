@@ -1,4 +1,4 @@
-package kudos26.aboutmovies.pojo;
+package kudos26.aboutmovies.movie;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,95 +6,86 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
+import static kudos26.aboutmovies.Constants.KEY_FAVORITE;
 import static kudos26.aboutmovies.Constants.KEY_ID;
+import static kudos26.aboutmovies.Constants.KEY_OVERVIEW;
 import static kudos26.aboutmovies.Constants.KEY_POPULARITY;
 import static kudos26.aboutmovies.Constants.KEY_POSTER_PATH;
+import static kudos26.aboutmovies.Constants.KEY_RELEASE_DATE;
 import static kudos26.aboutmovies.Constants.KEY_TITLE;
 import static kudos26.aboutmovies.Constants.KEY_VOTE_AVERAGE;
-import static kudos26.aboutmovies.Constants.TABLE_MOVIE;
+import static kudos26.aboutmovies.Constants.TABLE_MOVIES;
 
-@Entity(tableName = TABLE_MOVIE)
-public class MovieEntry {
+@Entity(tableName = TABLE_MOVIES)
+public class MovieEntity {
 
     @NonNull
     @PrimaryKey
-    @SerializedName(KEY_ID)
     @ColumnInfo(name = KEY_ID)
     private Integer mId;
 
     @NonNull
-    @SerializedName(KEY_TITLE)
     @ColumnInfo(name = KEY_TITLE)
     private String mTitle;
 
     /*@NonNull
-    @SerializedName(KEY_ORIGINAL_TITLE)
     @ColumnInfo(name = KEY_ORIGINAL_TITLE)
-    private String mOriginalTitle;
+    private String mOriginalTitle;*/
 
     @NonNull
-    @SerializedName(KEY_RELEASE_DATE)
     @ColumnInfo(name = KEY_RELEASE_DATE)
     private String mReleaseDate;
 
-    @NonNull
-    @SerializedName(KEY_ADULT)
+    /*@NonNull
     @ColumnInfo(name = KEY_ADULT)
     private Boolean mAdult;
 
     @NonNull
-    @SerializedName(KEY_VOTE_COUNT)
     @ColumnInfo(name = KEY_VOTE_COUNT)
     private Integer mVoteCount;*/
 
     @NonNull
-    @SerializedName(KEY_VOTE_AVERAGE)
     @ColumnInfo(name = KEY_VOTE_AVERAGE)
     private Float mVoteAverage;
 
     /*@NonNull
-    @SerializedName(KEY_VIDEO)
     @ColumnInfo(name = KEY_VIDEO)
     private Boolean mVideo;*/
 
     @NonNull
-    @SerializedName(KEY_POPULARITY)
     @ColumnInfo(name = KEY_POPULARITY)
     private Float mPopularity;
 
     @Nullable
-    @SerializedName(KEY_POSTER_PATH)
     @ColumnInfo(name = KEY_POSTER_PATH)
     private String mPosterPath;
 
     /*@NonNull
-    @SerializedName(KEY_ORIGINAL_LANGUAGE)
     @ColumnInfo(name = KEY_ORIGINAL_LANGUAGE)
     private String mOriginalLanguage;
 
     @NonNull
-    @SerializedName(KEY_GENRE_IDS)
     @ColumnInfo(name = KEY_GENRE_IDS)
     private String mGenreIds;
 
     @Nullable
-    @SerializedName(KEY_BACKDROP_PATH)
     @ColumnInfo(name = KEY_BACKDROP_PATH)
-    private String mBackdropPath;
+    private String mBackdropPath;*/
 
     @NonNull
-    @SerializedName(KEY_OVERVIEW)
     @ColumnInfo(name = KEY_OVERVIEW)
-    private String mOverview;*/
+    private String mOverview;
 
-    public MovieEntry(@NonNull Integer mId, @NonNull String mTitle, @NonNull Float mVoteAverage, @NonNull Float mPopularity, @NonNull String mPosterPath) {
+    @NonNull
+    @ColumnInfo(name = KEY_FAVORITE)
+    private Boolean mFavorite;
+
+    public MovieEntity(@NonNull Integer mId, @NonNull String mTitle, @NonNull String mReleaseDate, @NonNull Float mVoteAverage, @NonNull Float mPopularity, @NonNull String mPosterPath, @NonNull String mOverview, @NonNull Boolean favorite) {
         this.mId = mId;
         this.mTitle = mTitle;
-        /*this.mOriginalTitle = mOriginalTitle;
+        /*this.mOriginalTitle = mOriginalTitle;*/
         this.mReleaseDate = mReleaseDate;
-        this.mAdult = mAdult;
+        /*this.mAdult = mAdult;
         this.mVoteCount = mVoteCount;*/
         this.mVoteAverage = mVoteAverage;
         /*this.mVideo = mVideo;*/
@@ -102,24 +93,26 @@ public class MovieEntry {
         this.mPosterPath = mPosterPath;
         /*this.mOriginalLanguage = mOriginalLanguage;
         this.mGenreIds = mGenreIds;
-        this.mBackdropPath = mBackdropPath;
-        this.mOverview = mOverview;*/
+        this.mBackdropPath = mBackdropPath;*/
+        this.mOverview = mOverview;
+        this.mFavorite = false;
     }
 
-    public MovieEntry(@NonNull MovieObject movieObject) {
-        this.mId = movieObject.getId();
-        this.mTitle = movieObject.getTitle();
-        /*this.mOriginalTitle = movieObject.getOriginalTitle();
-        this.mReleaseDate = movieObject.getReleaseDate();
-        this.mAdult = movieObject.getAdult();
+    public MovieEntity(@NonNull MovieObject movie) {
+        this.mId = movie.getId();
+        this.mTitle = movie.getTitle();
+        /*this.mOriginalTitle = movieObject.getOriginalTitle();*/
+        this.mReleaseDate = movie.getReleaseDate();
+        /*this.mAdult = movieObject.getAdult();
         this.mVoteCount = movieObject.getVoteCount();*/
-        this.mVoteAverage = movieObject.getVoteAverage();
+        this.mVoteAverage = movie.getVoteAverage();
         /*this.mVideo = movieObject.getVideo();*/
-        this.mPopularity = movieObject.getPopularity();
-        this.mPosterPath = movieObject.getPosterPath();
+        this.mPopularity = movie.getPopularity();
+        this.mPosterPath = movie.getPosterPath();
         /*this.mGenreIds = movieObject.getGenreIds().toString();
-        this.mBackdropPath = movieObject.getBackdropPath();
-        this.mOverview = movieObject.getOverview();*/
+        this.mBackdropPath = movieObject.getBackdropPath();*/
+        this.mOverview = movie.getOverview();
+        this.mFavorite = false;
     }
 
     @NonNull
@@ -135,14 +128,14 @@ public class MovieEntry {
     /*@NonNull
     public String getOriginalTitle() {
         return mOriginalTitle;
-    }
+    }*/
 
     @NonNull
     public String getReleaseDate() {
         return mReleaseDate;
     }
 
-    @NonNull
+    /*@NonNull
     public Boolean getAdult() {
         return mAdult;
     }
@@ -185,12 +178,12 @@ public class MovieEntry {
     @Nullable
     public String getBackdropPath() {
         return mBackdropPath;
-    }
+    }*/
 
     @NonNull
     public String getOverview() {
         return mOverview;
-    }*/
+    }
 
     public void setmId(@NonNull Integer mId) {
         this.mId = mId;
@@ -202,13 +195,13 @@ public class MovieEntry {
 
     /*public void setmOriginalTitle(@NonNull String mOriginalTitle) {
         this.mOriginalTitle = mOriginalTitle;
-    }
+    }*/
 
     public void setmReleaseDate(@NonNull String mReleaseDate) {
         this.mReleaseDate = mReleaseDate;
     }
 
-    public void setmAdult(@NonNull Boolean mAdult) {
+    /*public void setmAdult(@NonNull Boolean mAdult) {
         this.mAdult = mAdult;
     }
 
@@ -242,9 +235,18 @@ public class MovieEntry {
 
     public void setmBackdropPath(@Nullable String mBackdropPath) {
         this.mBackdropPath = mBackdropPath;
-    }
+    }*/
 
     public void setmOverview(@NonNull String mOverview) {
         this.mOverview = mOverview;
-    }*/
+    }
+
+    @NonNull
+    public Boolean getFavorite() {
+        return mFavorite;
+    }
+
+    public void setFavourite(@NonNull Boolean mFavourite) {
+        this.mFavorite = mFavourite;
+    }
 }
