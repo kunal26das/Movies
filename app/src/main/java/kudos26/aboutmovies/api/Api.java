@@ -38,6 +38,5 @@ public interface Api {
     @GET(ADDRESS_TRAILERS)
     Call<TrailersResponse> getMovieTrailers(@Path(PATH_ID) int movieId,
                                             @Query(QUERY_API_KEY) String apiKey,
-                                            @Query(QUERY_LANGUAGE) String language,
-                                            @Query(QUERY_PAGE) String page);
+                                            @Query(QUERY_LANGUAGE) String language);
 }

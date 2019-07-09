@@ -7,6 +7,9 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import kudos26.aboutmovies.SingletonDao;
+import kudos26.aboutmovies.SingletonDatabase;
+
 public class ReviewViewModel extends AndroidViewModel {
 
     private ReviewRepository mReviewRepository;
@@ -20,4 +23,20 @@ public class ReviewViewModel extends AndroidViewModel {
         return mReviewRepository.getReviews(movieId);
     }
 
+    public static class ReviewRepository {
+
+        private static SingletonDao mReviewDao;
+        private SingletonDatabase mSingletonDatabase;
+        //private LiveData<List<ReviewEntity>> mReviewEntries;
+
+        ReviewRepository(Application application) {
+            mSingletonDatabase = SingletonDatabase.getDatabase(application);
+            mReviewDao = mSingletonDatabase.getDao();
+        }
+
+        LiveData<List<ReviewEntity>> getReviews(int movieId) {
+            mSingletonDatabase.fetchMovieReviews(movieId);
+            return mReviewDao.getReviews(movieId);
+        }
+    }
 }

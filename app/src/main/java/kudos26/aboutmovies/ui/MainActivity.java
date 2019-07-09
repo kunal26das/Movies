@@ -1,4 +1,4 @@
-package kudos26.aboutmovies;
+package kudos26.aboutmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Collections;
 import java.util.List;
 
+import kudos26.aboutmovies.R;
 import kudos26.aboutmovies.movie.MovieEntity;
 import kudos26.aboutmovies.movie.MovieScrollListener;
 import kudos26.aboutmovies.movie.MovieViewModel;
@@ -41,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     private MovieListAdapter mMovieListAdapter;
     private RecyclerView mMovieListRecyclerView;
     private GridLayoutManager mGridLayoutManager;
-    private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
-    private static final String BASE_URL_IMAGE = "http://image.tmdb.org/t/p/original";
     private static boolean mTwoPane;
     private Toolbar mToolbar;
+    private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
+    private static final String BASE_URL_IMAGE = "http://image.tmdb.org/t/p/original";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

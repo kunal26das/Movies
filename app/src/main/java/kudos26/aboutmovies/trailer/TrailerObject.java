@@ -16,7 +16,7 @@ import static kudos26.aboutmovies.Constants.KEY_TYPE;
 public class TrailerObject {
 
     @SerializedName(KEY_ID)
-    private Integer mId;
+    private String mId;
 
     @SerializedName(KEY_ISO_LANGUAGE)
     private String mIsoLanguage;
@@ -39,7 +39,7 @@ public class TrailerObject {
     @SerializedName(KEY_TYPE)
     private String mType;
 
-    public TrailerObject(@NonNull Integer mId,
+    public TrailerObject(@NonNull String mId,
                          @NonNull String mIsoLanguage,
                          @NonNull String mIdLocale,
                          @NonNull String mAddressKey,
@@ -58,7 +58,7 @@ public class TrailerObject {
     }
 
     @NonNull
-    public Integer getId() {
+    public String getId() {
         return mId;
     }
 

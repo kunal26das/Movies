@@ -1,4 +1,4 @@
-package kudos26.aboutmovies;
+package kudos26.aboutmovies.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

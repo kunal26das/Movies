@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MovieDetailActivity"
+    tools:context=".ui.MovieDetailActivity"
     tools:ignore="MergeRootFrame">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -26,7 +26,7 @@
             app:toolbarId="@+id/toolbar">
 
             <ImageView
-                android:id="@+id/toolbar_poster_image_view"
+                android:id="@+id/iv_toolbar_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"

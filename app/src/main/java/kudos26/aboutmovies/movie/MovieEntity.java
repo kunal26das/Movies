@@ -95,10 +95,10 @@ public class MovieEntity {
         this.mGenreIds = mGenreIds;
         this.mBackdropPath = mBackdropPath;*/
         this.mOverview = mOverview;
-        this.mFavorite = false;
+        this.mFavorite = favorite;
     }
 
-    public MovieEntity(@NonNull MovieObject movie) {
+    public MovieEntity(@NonNull MovieObject movie, @NonNull Boolean favorite) {
         this.mId = movie.getId();
         this.mTitle = movie.getTitle();
         /*this.mOriginalTitle = movieObject.getOriginalTitle();*/
@@ -112,7 +112,7 @@ public class MovieEntity {
         /*this.mGenreIds = movieObject.getGenreIds().toString();
         this.mBackdropPath = movieObject.getBackdropPath();*/
         this.mOverview = movie.getOverview();
-        this.mFavorite = false;
+        this.mFavorite = favorite;
     }
 
     @NonNull
@@ -242,7 +242,7 @@ public class MovieEntity {
     }
 
     @NonNull
-    public Boolean getFavorite() {
+    public Boolean isFavorite() {
         return mFavorite;
     }
 

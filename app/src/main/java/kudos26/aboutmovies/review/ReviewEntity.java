@@ -5,8 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
 import static kudos26.aboutmovies.Constants.KEY_AUTHOR;
 import static kudos26.aboutmovies.Constants.KEY_CONTENT;
 import static kudos26.aboutmovies.Constants.KEY_ID_MOVIE;
@@ -19,27 +17,22 @@ public class ReviewEntity {
 
     @NonNull
     @PrimaryKey
-    @SerializedName(KEY_ID_REVIEW)
     @ColumnInfo(name = KEY_ID_REVIEW)
     private String mReviewId;
 
     @NonNull
-    @SerializedName(KEY_ID_MOVIE)
     @ColumnInfo(name = KEY_ID_MOVIE)
     private Integer mMovieId;
 
     @NonNull
-    @SerializedName(KEY_AUTHOR)
     @ColumnInfo(name = KEY_AUTHOR)
     private String mAuthor;
 
     @NonNull
-    @SerializedName(KEY_URL)
     @ColumnInfo(name = KEY_URL)
     private String mUrl;
 
     @NonNull
-    @SerializedName(KEY_CONTENT)
     @ColumnInfo(name = KEY_CONTENT)
     private String mContent;
 

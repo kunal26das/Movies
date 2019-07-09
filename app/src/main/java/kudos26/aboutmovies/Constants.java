@@ -45,6 +45,4 @@ public class Constants {
     public static final int TOP_RATED_MOVIES = 2;
     public static final int FAVORITE_MOVIES = 3;
 
-    public static final String DATABASE = "database";
-
 }

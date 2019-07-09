@@ -25,7 +25,7 @@ public class TrailersResponse {
         this.mId = mId;
     }
 
-    public List<TrailerObject> getmTrailers() {
+    public List<TrailerObject> getTrailers() {
         return mTrailers;
     }
 

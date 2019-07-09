@@ -21,51 +21,42 @@ public class TrailerEntity {
 
     @NonNull
     @PrimaryKey
-    //@SerializedName(KEY_ID_TRAILER)
     @ColumnInfo(name = KEY_ID_TRAILER)
-    private Integer mTrailerId;
+    private String mTrailerId;
 
     @NonNull
-    //@SerializedName(KEY_ID_MOVIE)
     @ColumnInfo(name = KEY_ID_MOVIE)
     private Integer mMovieId;
 
     @NonNull
-    //@SerializedName(KEY_ISO_LANGUAGE)
     @ColumnInfo(name = KEY_ISO_LANGUAGE)
     private String mIsoLanguage;
 
     @NonNull
-    //@SerializedName(KEY_ISO_LOCALE)
     @ColumnInfo(name = KEY_ISO_LOCALE)
     private String mIsoLocale;
 
     @NonNull
-    //@SerializedName(KEY_ADDRESS_KEY)
     @ColumnInfo(name = KEY_ADDRESS_KEY)
     private String mAddressKey;
 
     @NonNull
-    //@SerializedName(KEY_NAME)
     @ColumnInfo(name = KEY_NAME)
     private String mName;
 
     @NonNull
-    //@SerializedName(KEY_SITE)
     @ColumnInfo(name = KEY_SITE)
     private String mSite;
 
     @NonNull
-    //@SerializedName(KEY_SIZE)
     @ColumnInfo(name = KEY_SIZE)
     private Integer mSize;
 
     @NonNull
-    //@SerializedName(KEY_TYPE)
     @ColumnInfo(name = KEY_TYPE)
     private String mType;
 
-    public TrailerEntity(@NonNull Integer mTrailerId,
+    public TrailerEntity(@NonNull String mTrailerId,
                          @NonNull Integer mMovieId,
                          @NonNull String mIsoLanguage,
                          @NonNull String mIsoLocale,
@@ -99,83 +90,83 @@ public class TrailerEntity {
     }
 
     @NonNull
-    public Integer getTrailerId() {
+    public String getTrailerId() {
         return mTrailerId;
     }
 
-    public void setmReviewId(@NonNull Integer mReviewId) {
+    public void setReviewId(@NonNull String mReviewId) {
         this.mTrailerId = mReviewId;
     }
 
     @NonNull
-    public Integer getmMovieId() {
+    public Integer getMovieId() {
         return mMovieId;
     }
 
-    public void setmMovieId(@NonNull Integer mMovieId) {
+    public void setMovieId(@NonNull Integer mMovieId) {
         this.mMovieId = mMovieId;
     }
 
     @NonNull
-    public String getmIsoLanguage() {
+    public String getIsoLanguage() {
         return mIsoLanguage;
     }
 
-    public void setmIsoLanguage(@NonNull String mIsoLanguage) {
+    public void setIsoLanguage(@NonNull String mIsoLanguage) {
         this.mIsoLanguage = mIsoLanguage;
     }
 
     @NonNull
-    public String getmIsoLocale() {
+    public String getIsoLocale() {
         return mIsoLocale;
     }
 
-    public void setmIsoLocale(@NonNull String mIsoLocale) {
+    public void setIsoLocale(@NonNull String mIsoLocale) {
         this.mIsoLocale = mIsoLocale;
     }
 
     @NonNull
-    public String getmAddressKey() {
+    public String getAddressKey() {
         return mAddressKey;
     }
 
-    public void setmAddressKey(@NonNull String mAddressKey) {
+    public void setAddressKey(@NonNull String mAddressKey) {
         this.mAddressKey = mAddressKey;
     }
 
     @NonNull
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(@NonNull String mName) {
+    public void setName(@NonNull String mName) {
         this.mName = mName;
     }
 
     @NonNull
-    public String getmSite() {
+    public String getSite() {
         return mSite;
     }
 
-    public void setmSite(@NonNull String mSite) {
+    public void setSite(@NonNull String mSite) {
         this.mSite = mSite;
     }
 
     @NonNull
-    public Integer getmSize() {
+    public Integer getSize() {
         return mSize;
     }
 
-    public void setmSize(@NonNull Integer mSize) {
+    public void setSize(@NonNull Integer mSize) {
         this.mSize = mSize;
     }
 
     @NonNull
-    public String getmType() {
+    public String getType() {
         return mType;
     }
 
-    public void setmType(@NonNull String mType) {
+    public void setType(@NonNull String mType) {
         this.mType = mType;
     }
 }
