@@ -53,24 +53,24 @@ public class MovieViewModel extends AndroidViewModel {
 
     static class MovieRepository {
 
-        private static SingletonDao mSingletonDao;
-        private SingletonDatabase mSingletonDatabase;
+        private static SingletonDao mDao;
+        private SingletonDatabase mDatabase;
 
         MovieRepository(Application application) {
-            mSingletonDatabase = SingletonDatabase.getDatabase(application);
-            mSingletonDao = mSingletonDatabase.getDao();
+            mDatabase = SingletonDatabase.getDatabase(application);
+            mDao = mDatabase.getDao();
         }
 
         LiveData<List<MovieEntity>> getMovies(int sortCriteria) {
             switch (sortCriteria) {
                 case POPULAR_MOVIES: {
-                    return mSingletonDao.getPopularMovies();
+                    return mDao.getPopularMovies();
                 }
                 case TOP_RATED_MOVIES: {
-                    return mSingletonDao.getTopRatedMovies();
+                    return mDao.getTopRatedMovies();
                 }
                 case FAVORITE_MOVIES: {
-                    return null;
+                    return mDao.getFavoriteMovies();
                 }
                 default: {
                     return null;
@@ -79,27 +79,27 @@ public class MovieViewModel extends AndroidViewModel {
         }
 
         MovieEntity getMovie(int movieId) {
-            return mSingletonDao.getMovie(movieId);
+            return mDao.getMovie(movieId);
         }
 
         void getMoviesPage(int sortCriteria, int page) {
-            mSingletonDatabase.getMoviesPage(sortCriteria, page);
+            mDatabase.getMoviesPage(sortCriteria, page);
         }
 
         boolean isMovieFavorite(int movieId) {
-            return mSingletonDao.isFavorite(movieId);
+            return mDao.isFavorite(movieId);
         }
 
         void setFavorite(int movieId) {
-            mSingletonDao.setFavorite(movieId, true);
+            mDao.setFavorite(movieId, true);
         }
 
         void setNotFavorite(int movieId) {
-            mSingletonDao.setFavorite(movieId, false);
+            mDao.setFavorite(movieId, false);
         }
 
         void updateMovie(MovieEntity movie) {
-            mSingletonDao.update(movie);
+            mDao.update(movie);
         }
 
     }

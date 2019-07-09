@@ -30,7 +30,9 @@ import kudos26.aboutmovies.movie.MovieEntity;
 import kudos26.aboutmovies.movie.MovieScrollListener;
 import kudos26.aboutmovies.movie.MovieViewModel;
 
+import static kudos26.aboutmovies.Constants.FAVORITE_MOVIES;
 import static kudos26.aboutmovies.Constants.KEY_ID;
+import static kudos26.aboutmovies.Constants.KEY_ID_MOVIE;
 import static kudos26.aboutmovies.Constants.POPULAR_MOVIES;
 import static kudos26.aboutmovies.Constants.TOP_RATED_MOVIES;
 
@@ -120,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
             }
             case R.id.favorites: {
                 mToolbar.setTitle(STRING_FAVORITE_MOVIES);
+                mMovieViewModel.getMovieLiveData(FAVORITE_MOVIES).observe(this, new Observer<List<MovieEntity>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<MovieEntity> movieEntityList) {
+                        mMovieListAdapter.setMovies(movieEntityList);
+                    }
+                });
                 return true;
             }
             default: {
@@ -179,7 +187,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (mTwoPane) {
-
+                            Bundle arguments = new Bundle();
+                            arguments.putInt(KEY_ID_MOVIE, mMovieId);
+                            MovieDetailFragment fragment = new MovieDetailFragment();
+                            fragment.setArguments(arguments);
                         } else {
                             Context context = view.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);

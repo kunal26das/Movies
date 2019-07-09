@@ -31,7 +31,7 @@ public interface SingletonDao {
     @Query("SELECT * FROM " + TABLE_MOVIES + " ORDER BY " + KEY_POPULARITY + " DESC")
     LiveData<List<MovieEntity>> getPopularMovies();
 
-    @Query("SELECT * FROM " + TABLE_MOVIES + " WHERE " + KEY_FAVORITE + " = " + true)
+    @Query("SELECT * FROM " + TABLE_MOVIES + " WHERE " + KEY_FAVORITE + " = " + 1)
     LiveData<List<MovieEntity>> getFavoriteMovies();
 
     @Query("SELECT * FROM " + TABLE_MOVIES + " WHERE " + KEY_ID + " = :id")
