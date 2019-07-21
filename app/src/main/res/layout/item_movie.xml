@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="0dp">
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="16dp">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primaryColor"></com.facebook.shimmer.ShimmerFrameLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
             android:layout_height="match_parent"
-            android:id="@+id/movie_poster_image_view"
+            android:id="@+id/iv_movie_poster"
             android:layout_width="match_parent"
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/movie_title_text_view"
+            android:id="@+id/tv_movie_title"
+            android:ellipsize="marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/primaryColorTransparent"
-            android:lines="1"
+            android:singleLine="true"
             android:padding="8dp"
+            android:textSize="12sp"
             android:textColor="@color/whiteColor" />
     </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

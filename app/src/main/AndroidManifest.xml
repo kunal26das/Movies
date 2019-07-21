@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="kudos26.aboutmovies">
+    package="kudos26.movies">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,8 +18,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name="kudos26.movies.ui.MainActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,12 +27,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MovieDetailActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:name="kudos26.movies.ui.MovieDetailActivity"
+            android:parentActivityName="kudos26.movies.ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kudos26.aboutmovies.ui.MainActivity" />
+                android:value="kudos26.movies.ui.MainActivity" />
         </activity>
     </application>
 

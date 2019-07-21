@@ -36,6 +36,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
+                android:fitsSystemWindows="false"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -51,7 +52,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
         app:layout_anchor="@+id/movie_detail_container"
         app:layout_anchorGravity="top|end"
         app:srcCompat="@mipmap/ic_heart_outline_foreground" />

@@ -1,28 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
+        android:textSize="16sp"
         android:id="@+id/tv_review_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
-        android:textSize="18sp"
+        android:visibility="gone"
         android:textStyle="bold" />
 
     <TextView
+        android:maxLines="3"
         android:id="@+id/tv_review_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:justificationMode="inter_word"
-        android:maxLines="5"
+        android:paddingTop="16dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/iv_expand_collapse"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:src="@mipmap/ic_expand_arrow_foreground" />
+    </FrameLayout>
 
 </LinearLayout>

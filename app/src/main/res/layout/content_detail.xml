@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movie_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,13 +12,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_info"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Info"
-            android:textSize="18sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="16dp"
+                android:textSize="16sp"
+                tools:text="Info" />
+
+            <RatingBar
+                android:id="@+id/movie_rating_bar"
+                style="@style/MovieRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_movie_synopsis"
@@ -38,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="Synopsis"
-                    android:textSize="23sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tv_movie_synopsis"
@@ -48,7 +65,7 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="20dp"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -69,9 +86,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="0dp"
                     android:text="Trailers"
-                    android:textSize="23sp" />
+                    android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_movie_trailers"
@@ -101,7 +120,7 @@
                     android:paddingTop="16dp"
                     android:paddingEnd="16dp"
                     android:text="Reviews"
-                    android:textSize="23sp" />
+                    android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_movie_reviews"
