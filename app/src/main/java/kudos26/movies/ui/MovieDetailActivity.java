@@ -3,11 +3,13 @@ package kudos26.movies.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -25,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import kudos26.movies.R;
 import kudos26.movies.movie.MovieEntity;
@@ -36,11 +39,14 @@ import kudos26.movies.trailer.TrailerEntity;
 import kudos26.movies.trailer.TrailerListAdapter;
 import kudos26.movies.trailer.TrailerViewModel;
 
+import static kudos26.movies.Constants.BASE_URL_IMAGE_HIGH;
+import static kudos26.movies.Constants.BASE_URL_YOUTUBE;
 import static kudos26.movies.Constants.KEY_ID;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private static final String BASE_URL_IMAGE = "http://image.tmdb.org/t/p/original";
+    private MovieEntity mMovieEntity;
+    private String mShareableLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,42 +60,53 @@ public class MovieDetailActivity extends AppCompatActivity {
         final MovieViewModel mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
         final int movieId = getIntent().getIntExtra(KEY_ID, 0);
-        final MovieEntity movie = mMovieViewModel.getMovieEntry(movieId);
+        try {
+            mMovieEntity = mMovieViewModel.getMovie(movieId);
+        } catch (ExecutionException e) {
+            finish();
+        } catch (InterruptedException e) {
+            finish();
+        }
 
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-        toolbar.setTitle(movie.getTitle());
+        toolbar.setTitle(mMovieEntity.getTitle());
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         ImageView toolbarPosterImageView = findViewById(R.id.iv_toolbar_poster);
-        Picasso.get().load(BASE_URL_IMAGE + movie.getPosterPath()).into(toolbarPosterImageView);
+        Picasso.get().load(BASE_URL_IMAGE_HIGH + mMovieEntity.getPosterPath()).into(toolbarPosterImageView);
 
-        movieRatingBar.setRating(movie.getVoteAverage() / 2);
-        String movieInfo = movie.getReleaseDate().split("-")[0] + "  |";
-        synopsisTextView.setText(movie.getOverview());
+        movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
+        String movieInfo = mMovieEntity.getReleaseDate().split("-")[0] + "  |";
+        synopsisTextView.setText(mMovieEntity.getOverview());
         infoTextView.setText(movieInfo);
 
         initTrailers(movieId);
         initReviews(movieId);
 
         final FloatingActionButton favoriteButton = findViewById(R.id.fab);
-        if (movie.isFavorite()) {
+        if (mMovieEntity.isFavorite()) {
             favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                     R.mipmap.ic_heart_filled_foreground));
         }
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMovieViewModel.isMovieFavorite(movieId)) {
-                    mMovieViewModel.setNotFavorite(movieId);
-                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.mipmap.ic_heart_outline_foreground));
-                } else {
-                    mMovieViewModel.setFavorite(movieId);
-                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.mipmap.ic_heart_filled_foreground));
+                try {
+                    mMovieViewModel.updateFavorite(movieId);
+                    if (mMovieViewModel.isFavorite(movieId)) {
+                        favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                R.mipmap.ic_heart_filled_foreground));
+                    } else {
+                        favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                R.mipmap.ic_heart_outline_foreground));
+                    }
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -108,6 +125,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         final CardView trailersCardView = findViewById(R.id.cv_movie_trailers);
         final RecyclerView trailersRecyclerView = findViewById(R.id.rv_movie_trailers);
         final TrailerListAdapter trailerListAdapter = new TrailerListAdapter(this);
+        trailersRecyclerView.setItemViewCacheSize(10);
         trailersRecyclerView.setAdapter(trailerListAdapter);
         trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         TrailerViewModel trailerViewModel = ViewModelProviders.of(this).get(TrailerViewModel.class);
@@ -120,6 +138,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 } else if (trailers != null) {
                     trailerListAdapter.setTrailers(trailers);
                     trailersCardView.setVisibility(View.VISIBLE);
+                    mShareableLink = BASE_URL_YOUTUBE + trailers.get(0).getAddressKey();
                 }
             }
         });
@@ -147,11 +166,26 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             navigateUpTo(new Intent(this, MainActivity.class));
             return true;
+        } else if (id == R.id.share) {
+            if (mShareableLink != null) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, mShareableLink);
+                startActivity(Intent.createChooser(shareIntent, "Trailer"));
+            } else {
+                Toast.makeText(this, "No Trailers Found", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

@@ -32,10 +32,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp">
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/iv_expand_collapse"

@@ -52,8 +52,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="16dp"
         app:layout_anchor="@+id/movie_detail_container"
         app:layout_anchorGravity="top|end"
         app:srcCompat="@mipmap/ic_heart_outline_foreground" />

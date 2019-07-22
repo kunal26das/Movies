@@ -9,6 +9,11 @@ import java.util.List;
 
 import kudos26.movies.SingletonDao;
 import kudos26.movies.SingletonDatabase;
+import kudos26.movies.review.api.ReviewsApiCallback;
+import kudos26.movies.review.api.ReviewsApiClient;
+
+import static android.provider.MediaStore.Video.VideoColumns.LANGUAGE;
+import static kudos26.movies.Constants.API_KEY;
 
 public class ReviewViewModel extends AndroidViewModel {
 
@@ -23,20 +28,30 @@ public class ReviewViewModel extends AndroidViewModel {
         return mReviewRepository.getReviews(movieId);
     }
 
+    // Repository
     public static class ReviewRepository {
 
-        private static SingletonDao mReviewDao;
-        private SingletonDatabase mSingletonDatabase;
-        //private LiveData<List<ReviewEntity>> mReviewEntries;
+        private static SingletonDao mDao;
+        private static ReviewsApiClient mApiClient;
 
         ReviewRepository(Application application) {
-            mSingletonDatabase = SingletonDatabase.getDatabase(application);
-            mReviewDao = mSingletonDatabase.getDao();
+            mDao = SingletonDatabase.getDatabase(application).getDao();
+            mApiClient = new ReviewsApiClient();
         }
 
-        LiveData<List<ReviewEntity>> getReviews(int movieId) {
-            mSingletonDatabase.fetchMovieReviews(movieId);
-            return mReviewDao.getReviews(movieId);
+        LiveData<List<ReviewEntity>> getReviews(final int movieId) {
+            mApiClient.getReviews(new ReviewsApiCallback() {
+                @Override
+                public void onSuccess(ReviewObject review) {
+                    mDao.insertReview(new ReviewEntity(movieId, review));
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            }, movieId, API_KEY, LANGUAGE, 1);
+            return mDao.getReviews(movieId);
         }
     }
 }

@@ -41,7 +41,10 @@ public interface SingletonDao {
     Boolean isFavorite(Integer id);
 
     @Query("UPDATE " + TABLE_MOVIES + " SET " + KEY_FAVORITE + " = :favorite " + " WHERE " + KEY_ID + " = :id")
-    void setFavorite(Integer id, Boolean favorite);
+    void setLike(Integer id, Boolean favorite);
+
+    @Query("UPDATE " + TABLE_MOVIES + " SET " + KEY_FAVORITE + " = CASE WHEN " + KEY_FAVORITE + " = 1 THEN " + " 0 WHEN " + KEY_FAVORITE + " = 0 THEN 1 END WHERE " + KEY_ID + " = :id")
+    void updateFavorite(Integer id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertMovie(MovieEntity movie);

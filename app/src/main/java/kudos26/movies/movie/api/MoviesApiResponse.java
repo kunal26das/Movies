@@ -1,13 +1,12 @@
-package kudos26.movies.review;
+package kudos26.movies.movie.api;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ReviewsResponse {
+import kudos26.movies.movie.MovieObject;
 
-    @SerializedName("id")
-    private int mId;
+public class MoviesApiResponse {
 
     @SerializedName("page")
     private int mPage;
@@ -19,25 +18,16 @@ public class ReviewsResponse {
     private int mTotalPages;
 
     @SerializedName("results")
-    private List<ReviewObject> mReviews;
+    private List<MovieObject> mResults;
 
-    public ReviewsResponse(int mId,
-                           int mPage,
-                           int mTotalResults,
-                           int mTotalPages,
-                           List<ReviewObject> mReviews) {
+    public MoviesApiResponse(int mPage,
+                             int mTotalResults,
+                             int mTotalPages,
+                             List<MovieObject> mResults) {
         this.mPage = mPage;
         this.mTotalResults = mTotalResults;
         this.mTotalPages = mTotalPages;
-        this.mReviews = mReviews;
-    }
-
-    public int getmId() {
-        return mId;
-    }
-
-    public void setmId(int mId) {
-        this.mId = mId;
+        this.mResults = mResults;
     }
 
     public int getPage() {
@@ -64,13 +54,11 @@ public class ReviewsResponse {
         this.mTotalPages = mTotalPages;
     }
 
-    public List<ReviewObject> getResults() {
-        return mReviews;
+    public List<MovieObject> getResults() {
+        return mResults;
     }
 
-    public void setResults(List<ReviewObject> mResults) {
-        this.mReviews = mResults;
+    public void setResults(List<MovieObject> mResults) {
+        this.mResults = mResults;
     }
-
-
 }

@@ -1,10 +1,12 @@
-package kudos26.movies.trailer;
+package kudos26.movies.trailer.api;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TrailersResponse {
+import kudos26.movies.trailer.TrailerObject;
+
+public class TrailersApiResponse {
 
     @SerializedName("id")
     private Integer mId;
@@ -12,7 +14,7 @@ public class TrailersResponse {
     @SerializedName("results")
     private List<TrailerObject> mTrailers;
 
-    public TrailersResponse(Integer mId, List<TrailerObject> mTrailers) {
+    public TrailersApiResponse(Integer mId, List<TrailerObject> mTrailers) {
         this.mId = mId;
         this.mTrailers = mTrailers;
     }

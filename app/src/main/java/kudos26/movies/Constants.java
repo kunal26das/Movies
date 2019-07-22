@@ -45,4 +45,13 @@ public class Constants {
     public static final int TOP_RATED_MOVIES = 2;
     public static final int FAVORITE_MOVIES = 3;
 
+    public static final String BASE_URL_IMAGE_HIGH = "http://image.tmdb.org/t/p/original";
+    public static final String BASE_URL_IMAGE_LOW = "http://image.tmdb.org/t/p/w342";
+    public static final String BASE_URL_YOUTUBE = "https://www.youtube.com/watch?v=";
+    public static final String BASE_URL_API = "https://mMoviesApi.themoviedb.org/3/movie/";
+
+    private static final String STRING_POPULAR_MOVIES = "Popular Movies";
+    private static final String STRING_FAVORITE_MOVIES = "Favorite Movies";
+    private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
+
 }
