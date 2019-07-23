@@ -5,55 +5,56 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static kudos26.movies.Constants.KEY_ADDRESS_KEY;
-import static kudos26.movies.Constants.KEY_ID_MOVIE;
-import static kudos26.movies.Constants.KEY_ID_TRAILER;
-import static kudos26.movies.Constants.KEY_ISO_LANGUAGE;
-import static kudos26.movies.Constants.KEY_ISO_LOCALE;
-import static kudos26.movies.Constants.KEY_NAME;
-import static kudos26.movies.Constants.KEY_SITE;
-import static kudos26.movies.Constants.KEY_SIZE;
-import static kudos26.movies.Constants.KEY_TYPE;
-import static kudos26.movies.Constants.TABLE_TRAILERS;
+import static kudos26.movies.room.Database.TABLE_TRAILERS;
 
 @Entity(tableName = TABLE_TRAILERS)
 public class TrailerEntity {
 
+    public static final String COL_ID_MOVIE = "id_movie";
+    public static final String COL_ID_TRAILER = "id_trailer";
+    public static final String COL_ISO_LANGUAGE = "iso_639_1";
+    public static final String COL_ISO_LOCALE = "iso_3166_1";
+    public static final String COL_ADDRESS_KEY = "key";
+    public static final String COL_NAME = "name";
+    public static final String COL_SITE = "site";
+    public static final String COL_SIZE = "size";
+    public static final String COL_TYPE = "type";
+
     @NonNull
     @PrimaryKey
-    @ColumnInfo(name = KEY_ID_TRAILER)
+    @ColumnInfo(name = COL_ID_TRAILER)
     private String mTrailerId;
 
     @NonNull
-    @ColumnInfo(name = KEY_ID_MOVIE)
+    @ColumnInfo(name = COL_ID_MOVIE)
     private Integer mMovieId;
 
     @NonNull
-    @ColumnInfo(name = KEY_ISO_LANGUAGE)
+    @ColumnInfo(name = COL_ISO_LANGUAGE)
     private String mIsoLanguage;
 
     @NonNull
-    @ColumnInfo(name = KEY_ISO_LOCALE)
+    @ColumnInfo(name = COL_ISO_LOCALE)
     private String mIsoLocale;
 
     @NonNull
-    @ColumnInfo(name = KEY_ADDRESS_KEY)
+    @ColumnInfo(name = COL_ADDRESS_KEY)
     private String mAddressKey;
 
     @NonNull
-    @ColumnInfo(name = KEY_NAME)
+    @ColumnInfo(name = COL_NAME)
     private String mName;
 
     @NonNull
-    @ColumnInfo(name = KEY_SITE)
+    @ColumnInfo(name = COL_SITE)
     private String mSite;
 
     @NonNull
-    @ColumnInfo(name = KEY_SIZE)
+    @ColumnInfo(name = COL_SIZE)
     private Integer mSize;
 
     @NonNull
-    @ColumnInfo(name = KEY_TYPE)
+    @ColumnInfo(name = COL_TYPE)
     private String mType;
 
     public TrailerEntity(@NonNull String mTrailerId,

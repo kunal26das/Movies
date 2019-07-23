@@ -11,7 +11,7 @@
     tools:context=".ui.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movie_list_recycler_view"
+        android:id="@+id/rv_movie_list"
         android:layout_width="350dp"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -21,6 +21,16 @@
         android:id="@+id/movie_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Empty!"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+    </FrameLayout>
 
 </LinearLayout>

@@ -5,35 +5,36 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static kudos26.movies.Constants.KEY_AUTHOR;
-import static kudos26.movies.Constants.KEY_CONTENT;
-import static kudos26.movies.Constants.KEY_ID_MOVIE;
-import static kudos26.movies.Constants.KEY_ID_REVIEW;
-import static kudos26.movies.Constants.KEY_URL;
-import static kudos26.movies.Constants.TABLE_REVIEWS;
+import static kudos26.movies.room.Database.TABLE_REVIEWS;
 
 @Entity(tableName = TABLE_REVIEWS)
 public class ReviewEntity {
 
+    public static final String COL_URL = "url";
+    public static final String COL_AUTHOR = "author";
+    public static final String COL_CONTENT = "content";
+    public static final String COL_ID_MOVIE = "id_movie";
+    public static final String COL_ID_REVIEW = "id_review";
+
     @NonNull
     @PrimaryKey
-    @ColumnInfo(name = KEY_ID_REVIEW)
+    @ColumnInfo(name = COL_ID_REVIEW)
     private String mReviewId;
 
     @NonNull
-    @ColumnInfo(name = KEY_ID_MOVIE)
+    @ColumnInfo(name = COL_ID_MOVIE)
     private Integer mMovieId;
 
     @NonNull
-    @ColumnInfo(name = KEY_AUTHOR)
+    @ColumnInfo(name = COL_AUTHOR)
     private String mAuthor;
 
     @NonNull
-    @ColumnInfo(name = KEY_URL)
+    @ColumnInfo(name = COL_URL)
     private String mUrl;
 
     @NonNull
-    @ColumnInfo(name = KEY_CONTENT)
+    @ColumnInfo(name = COL_CONTENT)
     private String mContent;
 
     public ReviewEntity(@NonNull String mReviewId,

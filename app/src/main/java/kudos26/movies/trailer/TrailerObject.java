@@ -4,16 +4,16 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import static kudos26.movies.Constants.KEY_ADDRESS_KEY;
-import static kudos26.movies.Constants.KEY_ID;
-import static kudos26.movies.Constants.KEY_ISO_LANGUAGE;
-import static kudos26.movies.Constants.KEY_ISO_LOCALE;
-import static kudos26.movies.Constants.KEY_NAME;
-import static kudos26.movies.Constants.KEY_SITE;
-import static kudos26.movies.Constants.KEY_SIZE;
-import static kudos26.movies.Constants.KEY_TYPE;
-
 public class TrailerObject {
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_ISO_LANGUAGE = "iso_639_1";
+    private static final String KEY_ISO_LOCALE = "iso_3166_1";
+    private static final String KEY_ADDRESS_KEY = "key";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_SITE = "site";
+    private static final String KEY_SIZE = "size";
+    private static final String KEY_TYPE = "type";
 
     @SerializedName(KEY_ID)
     private String mId;

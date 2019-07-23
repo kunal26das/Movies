@@ -54,7 +54,7 @@ public class TrailersApiClient {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        trailersApiCallback.onError(e);
                     }
                 });
     }

@@ -9,13 +9,13 @@ public abstract class MovieScrollListener extends RecyclerView.OnScrollListener 
 
     private int visibleThreshold = 10;
 
-    private int currentPage = 0;
+    private int currentPage = 1;
 
     private int previousTotalItemCount = 0;
 
     private boolean loading = true;
 
-    private int startingPageIndex = 0;
+    private int startingPageIndex = 1;
 
     public MovieScrollListener(GridLayoutManager gridLayoutManager) {
         mGridLayoutManager = gridLayoutManager;

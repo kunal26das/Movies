@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
-import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -15,7 +14,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static kudos26.movies.Constants.BASE_URL_API;
-import static kudos26.movies.Constants.TOP_RATED_MOVIES;
 
 @Singleton
 public class MoviesApiClient {
@@ -34,12 +32,9 @@ public class MoviesApiClient {
         mMoviesApi = mRetroFit.create(MoviesApi.class);
     }
 
-    public void getMovies(final MoviesApiCallback moviesApiCallback, int sortCriteria, String apiKey, String language, int page) {
-        Single<MoviesApiResponse> moviesResponseSingle = mMoviesApi.getPopularMovies(apiKey, language, String.valueOf(page));
-        if (sortCriteria == TOP_RATED_MOVIES) {
-            moviesResponseSingle = mMoviesApi.getTopRatedMovies(apiKey, language, String.valueOf(page));
-        }
-        moviesResponseSingle.subscribeOn(Schedulers.io())
+    public void getPopularMovies(final MoviesApiCallback moviesApiCallback, String apiKey, String language, int page) {
+        mMoviesApi.getPopularMovies(apiKey, language, String.valueOf(page))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<MoviesApiResponse>() {
                     @Override
@@ -59,7 +54,34 @@ public class MoviesApiClient {
 
                     @Override
                     public void onError(Throwable e) {
+                        moviesApiCallback.onFailure(e);
+                    }
+                });
+    }
 
+    public void getTopRatedMovies(final MoviesApiCallback moviesApiCallback, String apiKey, String language, int page) {
+        mMoviesApi.getTopRatedMovies(apiKey, language, String.valueOf(page))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<MoviesApiResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(MoviesApiResponse moviesApiResponse) {
+                        if (moviesApiResponse != null) {
+                            List<MovieObject> movies = moviesApiResponse.getResults();
+                            for (MovieObject movie : movies) {
+                                moviesApiCallback.onSuccess(movie);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        moviesApiCallback.onFailure(e);
                     }
                 });
     }

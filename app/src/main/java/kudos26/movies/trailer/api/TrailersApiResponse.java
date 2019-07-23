@@ -8,10 +8,13 @@ import kudos26.movies.trailer.TrailerObject;
 
 public class TrailersApiResponse {
 
-    @SerializedName("id")
+    private static final String KEY_ID = "id";
+    private static final String KEY_RESULTS = "results";
+
+    @SerializedName(KEY_ID)
     private Integer mId;
 
-    @SerializedName("results")
+    @SerializedName(KEY_RESULTS)
     private List<TrailerObject> mTrailers;
 
     public TrailersApiResponse(Integer mId, List<TrailerObject> mTrailers) {

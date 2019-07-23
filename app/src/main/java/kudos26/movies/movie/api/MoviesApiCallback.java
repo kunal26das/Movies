@@ -5,5 +5,5 @@ import kudos26.movies.movie.MovieObject;
 public interface MoviesApiCallback {
     void onSuccess(MovieObject movie);
 
-    void onFailure();
+    void onFailure(Throwable e);
 }

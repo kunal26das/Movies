@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import kudos26.movies.SingletonDao;
-import kudos26.movies.SingletonDatabase;
 import kudos26.movies.review.api.ReviewsApiCallback;
 import kudos26.movies.review.api.ReviewsApiClient;
+import kudos26.movies.room.Database;
+import kudos26.movies.room.ReviewsDao;
 
 import static android.provider.MediaStore.Video.VideoColumns.LANGUAGE;
 import static kudos26.movies.Constants.API_KEY;
@@ -31,11 +31,11 @@ public class ReviewViewModel extends AndroidViewModel {
     // Repository
     public static class ReviewRepository {
 
-        private static SingletonDao mDao;
+        private static ReviewsDao mDao;
         private static ReviewsApiClient mApiClient;
 
         ReviewRepository(Application application) {
-            mDao = SingletonDatabase.getDatabase(application).getDao();
+            mDao = Database.getDatabase(application).getReviewsDao();
             mApiClient = new ReviewsApiClient();
         }
 

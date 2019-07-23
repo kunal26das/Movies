@@ -12,12 +12,12 @@ public interface MoviesApi {
     String ADDRESS_POPULAR = "popular";
     String ADDRESS_TOP_RATED = "top_rated";
 
-    @GET(ADDRESS_POPULAR)
+    @GET(ADDRESS_TOP_RATED)
     Single<MoviesApiResponse> getTopRatedMovies(@Query(QUERY_API_KEY) String apiKey,
                                                 @Query(QUERY_LANGUAGE) String language,
                                                 @Query(QUERY_PAGE) String page);
 
-    @GET(ADDRESS_TOP_RATED)
+    @GET(ADDRESS_POPULAR)
     Single<MoviesApiResponse> getPopularMovies(@Query(QUERY_API_KEY) String apiKey,
                                                @Query(QUERY_LANGUAGE) String language,
                                                @Query(QUERY_PAGE) String page);

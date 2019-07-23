@@ -1,7 +1,6 @@
 package kudos26.movies.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +40,10 @@ import kudos26.movies.trailer.TrailerViewModel;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_HIGH;
 import static kudos26.movies.Constants.BASE_URL_YOUTUBE;
-import static kudos26.movies.Constants.KEY_ID;
+import static kudos26.movies.Constants.INTENT_KEY_MOVIE_ID;
 
 public class MovieDetailActivity extends AppCompatActivity {
+
 
     private MovieEntity mMovieEntity;
     private String mShareableLink;
@@ -54,39 +54,34 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         final TextView infoTextView = findViewById(R.id.tv_info);
-        final Toolbar toolbar = findViewById(R.id.detail_toolbar);
-        final TextView synopsisTextView = findViewById(R.id.tv_movie_synopsis);
+        final FloatingActionButton favoriteButton = findViewById(R.id.fab_favorite);
         final RatingBar movieRatingBar = findViewById(R.id.movie_rating_bar);
+        final TextView synopsisTextView = findViewById(R.id.tv_movie_synopsis);
+        final ImageView toolbarPosterImageView = findViewById(R.id.iv_toolbar_poster);
+        final int movieId = getIntent().getIntExtra(INTENT_KEY_MOVIE_ID, 0);
         final MovieViewModel mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
-        final int movieId = getIntent().getIntExtra(KEY_ID, 0);
-        try {
-            mMovieEntity = mMovieViewModel.getMovie(movieId);
-        } catch (ExecutionException e) {
-            finish();
-        } catch (InterruptedException e) {
-            finish();
-        }
+        mMovieEntity = mMovieViewModel.getMovie(movieId);
 
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-        toolbar.setTitle(mMovieEntity.getTitle());
-        setSupportActionBar(toolbar);
+        if (getSupportActionBar() == null) {
+            Toolbar toolbar = findViewById(R.id.detail_toolbar);
+            toolbar.setTitle(mMovieEntity.getTitle());
+            setSupportActionBar(toolbar);
+        }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        ImageView toolbarPosterImageView = findViewById(R.id.iv_toolbar_poster);
-        Picasso.get().load(BASE_URL_IMAGE_HIGH + mMovieEntity.getPosterPath()).into(toolbarPosterImageView);
 
-        movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
+        Picasso.get().load(BASE_URL_IMAGE_HIGH + mMovieEntity.getPosterPath()).into(toolbarPosterImageView);
         String movieInfo = mMovieEntity.getReleaseDate().split("-")[0] + "  |";
+        movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
         synopsisTextView.setText(mMovieEntity.getOverview());
         infoTextView.setText(movieInfo);
 
-        initTrailers(movieId);
-        initReviews(movieId);
+        initTrailers();
+        initReviews();
 
-        final FloatingActionButton favoriteButton = findViewById(R.id.fab);
         if (mMovieEntity.isFavorite()) {
             favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                     R.mipmap.ic_heart_filled_foreground));
@@ -94,8 +89,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mMovieViewModel.updateFavorite(movieId);
                 try {
-                    mMovieViewModel.updateFavorite(movieId);
                     if (mMovieViewModel.isFavorite(movieId)) {
                         favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                                 R.mipmap.ic_heart_filled_foreground));
@@ -111,17 +106,17 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
                     .commit();
-        }
+        }*/
     }
 
-    private void initTrailers(final int movieId) {
+    private void initTrailers() {
         final CardView trailersCardView = findViewById(R.id.cv_movie_trailers);
         final RecyclerView trailersRecyclerView = findViewById(R.id.rv_movie_trailers);
         final TrailerListAdapter trailerListAdapter = new TrailerListAdapter(this);
@@ -129,7 +124,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailersRecyclerView.setAdapter(trailerListAdapter);
         trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         TrailerViewModel trailerViewModel = ViewModelProviders.of(this).get(TrailerViewModel.class);
-        trailerViewModel.getMovieTrailers(movieId).observe(this, new Observer<List<TrailerEntity>>() {
+        trailerViewModel.getMovieTrailers(mMovieEntity.getId()).observe(this, new Observer<List<TrailerEntity>>() {
 
             @Override
             public void onChanged(List<TrailerEntity> trailers) {
@@ -144,7 +139,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void initReviews(final int movieId) {
+    private void initReviews() {
         final CardView reviewsCardView = findViewById(R.id.cv_movie_reviews);
         final RecyclerView reviewRecyclerView = findViewById(R.id.rv_movie_reviews);
         final ReviewListAdapter reviewListAdapter = new ReviewListAdapter(this);
@@ -152,7 +147,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         reviewRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         ReviewViewModel mReviewViewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
-        mReviewViewModel.getMovieReviews(movieId).observe(this, new Observer<List<ReviewEntity>>() {
+        mReviewViewModel.getMovieReviews(mMovieEntity.getId()).observe(this, new Observer<List<ReviewEntity>>() {
             @Override
             public void onChanged(@Nullable final List<ReviewEntity> reviews) {
                 if (reviews != null && reviews.isEmpty()) {

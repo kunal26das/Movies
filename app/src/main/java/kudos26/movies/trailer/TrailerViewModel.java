@@ -6,9 +6,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import kudos26.movies.SingletonDao;
-import kudos26.movies.SingletonDatabase;
+import kudos26.movies.room.Database;
+import kudos26.movies.room.TrailersDao;
 import kudos26.movies.trailer.api.TrailersApiCallback;
 import kudos26.movies.trailer.api.TrailersApiClient;
 
@@ -29,25 +31,32 @@ public class TrailerViewModel extends AndroidViewModel {
     }
 
     // Repository
-    public static class TrailerRepository {
+    public class TrailerRepository {
 
-        private static SingletonDao mDao;
-        private static TrailersApiClient mApiClient;
+        private TrailersDao mDao;
+        private TrailersApiClient mApiClient;
+        private ExecutorService mExecutorService;
 
         TrailerRepository(Application application) {
             mApiClient = new TrailersApiClient();
-            mDao = SingletonDatabase.getDatabase(application).getDao();
+            mExecutorService = Executors.newSingleThreadExecutor();
+            mDao = Database.getDatabase(application).getTrailersDao();
         }
 
         LiveData<List<TrailerEntity>> getTrailers(final int movieId) {
             mApiClient.getTrailers(new TrailersApiCallback() {
                 @Override
-                public void onSuccess(TrailerObject trailer) {
-                    mDao.insertTrailer(new TrailerEntity(movieId, trailer));
+                public void onSuccess(final TrailerObject trailer) {
+                    mExecutorService.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDao.insertTrailer(new TrailerEntity(movieId, trailer));
+                        }
+                    });
                 }
 
                 @Override
-                public void onFailure(Throwable error) {
+                public void onError(Throwable error) {
 
                 }
             }, movieId, API_KEY, LANGUAGE);

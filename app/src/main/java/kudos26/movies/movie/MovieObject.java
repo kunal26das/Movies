@@ -7,22 +7,22 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import static kudos26.movies.Constants.KEY_ADULT;
-import static kudos26.movies.Constants.KEY_BACKDROP_PATH;
-import static kudos26.movies.Constants.KEY_GENRE_IDS;
-import static kudos26.movies.Constants.KEY_ID;
-import static kudos26.movies.Constants.KEY_ORIGINAL_LANGUAGE;
-import static kudos26.movies.Constants.KEY_ORIGINAL_TITLE;
-import static kudos26.movies.Constants.KEY_OVERVIEW;
-import static kudos26.movies.Constants.KEY_POPULARITY;
-import static kudos26.movies.Constants.KEY_POSTER_PATH;
-import static kudos26.movies.Constants.KEY_RELEASE_DATE;
-import static kudos26.movies.Constants.KEY_TITLE;
-import static kudos26.movies.Constants.KEY_VIDEO;
-import static kudos26.movies.Constants.KEY_VOTE_AVERAGE;
-import static kudos26.movies.Constants.KEY_VOTE_COUNT;
-
 public class MovieObject {
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_ORIGINAL_TITLE = "original_title";
+    private static final String KEY_RELEASE_DATE = "release_date";
+    private static final String KEY_ADULT = "adult";
+    private static final String KEY_VOTE_COUNT = "vote_count";
+    private static final String KEY_VOTE_AVERAGE = "vote_average";
+    private static final String KEY_VIDEO = "video";
+    private static final String KEY_POPULARITY = "popularity";
+    private static final String KEY_POSTER_PATH = "poster_path";
+    private static final String KEY_ORIGINAL_LANGUAGE = "original_language";
+    private static final String KEY_GENRE_IDS = "genre_ids";
+    private static final String KEY_BACKDROP_PATH = "backdrop_path";
+    private static final String KEY_OVERVIEW = "overview";
 
     @SerializedName(KEY_ID)
     private Integer mId;

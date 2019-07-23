@@ -8,16 +8,21 @@ import kudos26.movies.movie.MovieObject;
 
 public class MoviesApiResponse {
 
-    @SerializedName("page")
+    private static final String KEY_PAGE = "page";
+    private static final String KEY_RESULTS = "results";
+    private static final String KEY_TOTAL_PAGES = "total_pages";
+    private static final String KEY_TOTAL_RESULTS = "total_results";
+
+    @SerializedName(KEY_PAGE)
     private int mPage;
 
-    @SerializedName("total_results")
+    @SerializedName(KEY_TOTAL_RESULTS)
     private int mTotalResults;
 
-    @SerializedName("total_pages")
+    @SerializedName(KEY_TOTAL_PAGES)
     private int mTotalPages;
 
-    @SerializedName("results")
+    @SerializedName(KEY_RESULTS)
     private List<MovieObject> mResults;
 
     public MoviesApiResponse(int mPage,

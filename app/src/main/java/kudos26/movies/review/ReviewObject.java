@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import static kudos26.movies.Constants.KEY_AUTHOR;
-import static kudos26.movies.Constants.KEY_CONTENT;
-import static kudos26.movies.Constants.KEY_ID;
-import static kudos26.movies.Constants.KEY_URL;
-
 public class ReviewObject {
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_URL = "url";
+    private static final String KEY_AUTHOR = "author";
+    private static final String KEY_CONTENT = "content";
 
     @SerializedName(KEY_ID)
     private String mId;

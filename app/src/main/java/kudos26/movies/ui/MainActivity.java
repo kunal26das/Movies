@@ -1,10 +1,7 @@
 package kudos26.movies.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,73 +23,79 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import kudos26.movies.R;
 import kudos26.movies.movie.MovieEntity;
-import kudos26.movies.movie.MovieScrollListener;
 import kudos26.movies.movie.MovieViewModel;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_LOW;
-import static kudos26.movies.Constants.FAVORITE_MOVIES;
-import static kudos26.movies.Constants.KEY_ID;
-import static kudos26.movies.Constants.KEY_ID_MOVIE;
-import static kudos26.movies.Constants.POPULAR_MOVIES;
-import static kudos26.movies.Constants.TOP_RATED_MOVIES;
+import static kudos26.movies.Constants.INTENT_KEY_MOVIE_ID;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String KEY_TOOLBAR_TITLE = "TOOLBAR_TITLE";
     private static boolean mTwoPane;
-
     private MovieViewModel mMovieViewModel;
-    private MovieListAdapter mMovieListAdapter;
+    private static final String KEY_SCROLL_POSITION = "SCROLL_POSITION";
     private GridLayoutManager mGridLayoutManager;
+    private static final String STRING_POPULAR_MOVIES = "Popular Movies";
+    private static final String STRING_FAVORITE_MOVIES = "Favorite Movies";
+    private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
+    private Toolbar mToolbar;
+    private RecyclerView mMovieRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
-        final RecyclerView mMovieListRecyclerView = findViewById(R.id.movie_list_recycler_view);
-        mMovieListAdapter = new MovieListAdapter(this);
+        final MovieListAdapter movieListAdapter = new MovieListAdapter(this);
         mGridLayoutManager = new GridLayoutManager(this, 2);
-        mMovieListRecyclerView.setLayoutManager(mGridLayoutManager);
-        mMovieListRecyclerView.setAdapter(mMovieListAdapter);
-        mMovieListRecyclerView.setItemViewCacheSize(100);
+        mMovieRecyclerView = findViewById(R.id.rv_movie_list);
+        mMovieRecyclerView.setLayoutManager(mGridLayoutManager);
+        mMovieRecyclerView.setAdapter(movieListAdapter);
+        mMovieRecyclerView.setItemViewCacheSize(100);
 
-        mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        try {
-            mMovieViewModel.getMovies().observe(this, new Observer<List<MovieEntity>>() {
-                @Override
-                public void onChanged(List<MovieEntity> movies) {
-                    if (movies != null) {
-                        mMovieListAdapter.setMovies(movies);
-                    }
-                }
-            });
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (getSupportActionBar() == null) {
+            mToolbar = findViewById(R.id.toolbar);
+            mToolbar.setTitle(STRING_POPULAR_MOVIES);
+            setSupportActionBar(mToolbar);
+        }
+        if (savedInstanceState != null) {
+            mToolbar.setTitle(savedInstanceState.getString(KEY_TOOLBAR_TITLE));
+            mGridLayoutManager.scrollToPosition(savedInstanceState.getInt(KEY_SCROLL_POSITION));
         }
 
-        mMovieListRecyclerView.addOnScrollListener(new MovieScrollListener(mGridLayoutManager) {
+        mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        mMovieViewModel.getSortCriteria().observe(this, new Observer<Integer>() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.i("Page Request", String.valueOf(page));
-                mMovieViewModel.fetchMovies(page);
+            public void onChanged(Integer integer) {
+                mMovieViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieEntity>>() {
+                    @Override
+                    public void onChanged(List<MovieEntity> movies) {
+                        if (movies != null) {
+                            movieListAdapter.setMovies(movies);
+                        }
+                    }
+                });
             }
         });
 
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fab_favorite).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mGridLayoutManager.scrollToPosition(0);
+                mMovieRecyclerView.scrollToPosition(0);
             }
         });
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(KEY_TOOLBAR_TITLE, mToolbar.getTitle().toString());
+        outState.putInt(KEY_SCROLL_POSITION, mGridLayoutManager.findFirstCompletelyVisibleItemPosition());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -99,18 +103,21 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.popular: {
-                //mToolbar.setTitle(STRING_POPULAR_MOVIES);
-                mMovieViewModel.setSortCriteria(POPULAR_MOVIES);
+                mToolbar.setTitle(STRING_POPULAR_MOVIES);
+                mMovieViewModel.switchToPopularMovies();
+                mMovieRecyclerView.scrollToPosition(0);
                 return true;
             }
             case R.id.top_rated: {
-                //mToolbar.setTitle(STRING_TOP_RATED_MOVIES);
-                mMovieViewModel.setSortCriteria(TOP_RATED_MOVIES);
+                mToolbar.setTitle(STRING_TOP_RATED_MOVIES);
+                mMovieViewModel.switchTopTopRatedMovies();
+                mMovieRecyclerView.scrollToPosition(0);
                 return true;
             }
-            case R.id.favorites: {
-                //mToolbar.setTitle(STRING_FAVORITE_MOVIES);
-                mMovieViewModel.setSortCriteria(FAVORITE_MOVIES);
+            case R.id.favorite: {
+                mToolbar.setTitle(STRING_FAVORITE_MOVIES);
+                mMovieViewModel.switchToFavoriteMovies();
+                mMovieRecyclerView.scrollToPosition(0);
                 return true;
             }
             default: {
@@ -125,13 +132,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public static class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
+    public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
 
-        private final LayoutInflater mLayoutInflater;
+        private MainActivity mParent;
         private List<MovieEntity> mMovies = Collections.emptyList();
 
-        MovieListAdapter(Context context) {
-            mLayoutInflater = LayoutInflater.from(context);
+        MovieListAdapter(MainActivity parent) {
+            mParent = parent;
         }
 
         @Override
@@ -147,12 +154,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         @NonNull
         public MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-            View movie = mLayoutInflater.inflate(R.layout.item_movie, parent, false);
+            View movie = mParent.getLayoutInflater().inflate(R.layout.item_movie, parent, false);
             return new MovieHolder(movie);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MovieHolder movieHolder, int position) {
+        public void onBindViewHolder(@NonNull MovieHolder movieHolder, final int position) {
             movieHolder.updateMovie(mMovies.get(position));
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) movieHolder.itemView.getLayoutParams();
             if (position % 2 == 0) {
@@ -167,37 +174,43 @@ public class MainActivity extends AppCompatActivity {
                     layoutParams.setMargins(0, 32, 32, 32);
                 }
             }
-
+            movieHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mTwoPane) {
+                        Bundle arguments = new Bundle();
+                        arguments.putInt(INTENT_KEY_MOVIE_ID, mMovies.get(position).getId());
+                        MovieDetailFragment fragment = new MovieDetailFragment();
+                        fragment.setArguments(arguments);
+                        mParent.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.movie_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Intent intent = new Intent(mParent, MovieDetailActivity.class);
+                        intent.putExtra(INTENT_KEY_MOVIE_ID, mMovies.get(position).getId());
+                        mParent.startActivity(intent);
+                    }
+                }
+            });
+            if (position + 1 == getItemCount()) {
+                int page = ((position + 1) / 20) + 1;
+                mMovieViewModel.fetchMovies(page);
+            }
         }
 
         class MovieHolder extends RecyclerView.ViewHolder {
 
             int mMovieId;
             TextView mMovieTitle;
-            ShimmerFrameLayout mMovieShimmer;
             ImageView mMoviePoster;
+            ShimmerFrameLayout mMovieShimmer;
 
             MovieHolder(View view) {
                 super(view);
                 mMovieTitle = view.findViewById(R.id.tv_movie_title);
                 mMovieShimmer = view.findViewById(R.id.shimmer_movie);
                 mMoviePoster = view.findViewById(R.id.iv_movie_poster);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (mTwoPane) {
-                            Bundle arguments = new Bundle();
-                            arguments.putInt(KEY_ID_MOVIE, mMovieId);
-                            MovieDetailFragment fragment = new MovieDetailFragment();
-                            fragment.setArguments(arguments);
-                        } else {
-                            Context context = view.getContext();
-                            Intent intent = new Intent(context, MovieDetailActivity.class);
-                            intent.putExtra(KEY_ID, mMovieId);
-                            context.startActivity(intent);
-                        }
-                    }
-                });
             }
 
             void updateMovie(MovieEntity movie) {

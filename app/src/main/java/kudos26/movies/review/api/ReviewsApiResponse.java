@@ -8,19 +8,25 @@ import kudos26.movies.review.ReviewObject;
 
 public class ReviewsApiResponse {
 
-    @SerializedName("id")
+    private static final String KEY_ID = "id";
+    private static final String KEY_PAGE = "page";
+    private static final String KEY_RESULTS = "results";
+    private static final String KEY_TOTAL_PAGES = "total_pages";
+    private static final String KEY_TOTAL_RESULTS = "total_results";
+
+    @SerializedName(KEY_ID)
     private int mId;
 
-    @SerializedName("page")
+    @SerializedName(KEY_PAGE)
     private int mPage;
 
-    @SerializedName("total_results")
+    @SerializedName(KEY_TOTAL_RESULTS)
     private int mTotalResults;
 
-    @SerializedName("total_pages")
+    @SerializedName(KEY_TOTAL_PAGES)
     private int mTotalPages;
 
-    @SerializedName("results")
+    @SerializedName(KEY_RESULTS)
     private List<ReviewObject> mReviews;
 
     public ReviewsApiResponse(int mId,
@@ -28,6 +34,7 @@ public class ReviewsApiResponse {
                               int mTotalResults,
                               int mTotalPages,
                               List<ReviewObject> mReviews) {
+        this.mId = mId;
         this.mPage = mPage;
         this.mTotalResults = mTotalResults;
         this.mTotalPages = mTotalPages;
