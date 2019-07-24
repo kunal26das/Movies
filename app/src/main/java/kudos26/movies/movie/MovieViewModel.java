@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,10 +13,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import kudos26.movies.Database;
+import kudos26.movies.movie.api.MovieObject;
 import kudos26.movies.movie.api.MoviesApiCallback;
 import kudos26.movies.movie.api.MoviesApiClient;
-import kudos26.movies.room.Database;
-import kudos26.movies.room.MoviesDao;
 
 import static kudos26.movies.Constants.API_KEY;
 import static kudos26.movies.Constants.EN_US;
@@ -39,27 +40,66 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<MovieEntity>> getMovies() {
-        updateMoviesLiveData();
+
+        mMovies = Transformations.switchMap(mSortCriteria,
+                sortBy -> {
+                    try {
+                        switch (sortBy) {
+                            case POPULAR_MOVIES: {
+                                return mMovieRepository.getPopularMovies();
+                            }
+                            case TOP_RATED_MOVIES: {
+                                return mMovieRepository.getTopRatedMovies();
+                            }
+                            case FAVORITE_MOVIES: {
+                                return mMovieRepository.getFavoriteMovies();
+                            }
+                        }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
         return mMovies;
     }
 
-    public MutableLiveData<Integer> getSortCriteria() {
-        return mSortCriteria;
+    public void fetchMovies(int page) {
+        mMovieRepository.fetchMovies(page);
     }
 
-    public MovieEntity getMovie(int id) {
+    public void switchToPopularMovies() {
+        mSortCriteria.setValue(POPULAR_MOVIES);
         try {
-            return mMovieRepository.getMovie(id);
+            mMovies = mMovieRepository.getPopularMovies();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    public void fetchMovies(int page) {
-        mMovieRepository.fetchMovies(page);
+    public void switchTopTopRatedMovies() {
+        mSortCriteria.setValue(TOP_RATED_MOVIES);
+        try {
+            mMovies = mMovieRepository.getTopRatedMovies();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void switchToFavoriteMovies() {
+        mSortCriteria.setValue(FAVORITE_MOVIES);
+        try {
+            mMovies = mMovieRepository.getPopularMovies();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isFavorite(int movieId) throws ExecutionException, InterruptedException {
@@ -68,32 +108,6 @@ public class MovieViewModel extends AndroidViewModel {
 
     public void updateFavorite(int movieId) {
         mMovieRepository.updateFavorite(movieId);
-    }
-
-    public void switchToPopularMovies() {
-        mSortCriteria.setValue(POPULAR_MOVIES);
-        updateMoviesLiveData();
-    }
-
-    public void switchTopTopRatedMovies() {
-        mSortCriteria.setValue(TOP_RATED_MOVIES);
-        updateMoviesLiveData();
-    }
-
-    public void switchToFavoriteMovies() {
-        mSortCriteria.setValue(FAVORITE_MOVIES);
-        updateMoviesLiveData();
-    }
-
-    private void updateMoviesLiveData() {
-        try {
-            fetchMovies(1);
-            mMovies = mMovieRepository.getMovies();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     // Repository
@@ -109,27 +123,29 @@ public class MovieViewModel extends AndroidViewModel {
             mDao = Database.getDatabase(application).getMoviesDao();
         }
 
-        LiveData<List<MovieEntity>> getMovies() throws ExecutionException, InterruptedException {
+        LiveData<List<MovieEntity>> getPopularMovies() throws ExecutionException, InterruptedException {
             return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
                 @Override
                 public LiveData<List<MovieEntity>> call() {
-                    if (mSortCriteria.getValue() != null) {
-                        switch (mSortCriteria.getValue()) {
-                            case POPULAR_MOVIES: {
-                                return mDao.getPopularMovies();
-                            }
-                            case TOP_RATED_MOVIES: {
-                                return mDao.getTopRatedMovies();
-                            }
-                            case FAVORITE_MOVIES: {
-                                return mDao.getFavoriteMovies();
-                            }
-                            default: {
-                                return null;
-                            }
-                        }
-                    }
-                    return null;
+                    return mDao.getPopularMovies();
+                }
+            }).get();
+        }
+
+        LiveData<List<MovieEntity>> getTopRatedMovies() throws ExecutionException, InterruptedException {
+            return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
+                @Override
+                public LiveData<List<MovieEntity>> call() {
+                    return mDao.getTopRatedMovies();
+                }
+            }).get();
+        }
+
+        LiveData<List<MovieEntity>> getFavoriteMovies() throws ExecutionException, InterruptedException {
+            return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
+                @Override
+                public LiveData<List<MovieEntity>> call() {
+                    return mDao.getFavoriteMovies();
                 }
             }).get();
         }

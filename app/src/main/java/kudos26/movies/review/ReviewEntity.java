@@ -5,7 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static kudos26.movies.room.Database.TABLE_REVIEWS;
+import kudos26.movies.review.api.ReviewObject;
+
+import static kudos26.movies.Database.TABLE_REVIEWS;
 
 @Entity(tableName = TABLE_REVIEWS)
 public class ReviewEntity {

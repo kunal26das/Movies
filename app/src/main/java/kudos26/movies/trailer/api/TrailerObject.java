@@ -1,4 +1,4 @@
-package kudos26.movies.trailer;
+package kudos26.movies.trailer.api;
 
 import androidx.annotation.NonNull;
 

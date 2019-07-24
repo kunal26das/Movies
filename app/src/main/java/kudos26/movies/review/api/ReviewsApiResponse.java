@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import kudos26.movies.review.ReviewObject;
-
 public class ReviewsApiResponse {
 
     private static final String KEY_ID = "id";

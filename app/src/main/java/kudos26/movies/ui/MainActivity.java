@@ -1,5 +1,6 @@
 package kudos26.movies.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,20 +19,25 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import kudos26.movies.R;
 import kudos26.movies.movie.MovieEntity;
 import kudos26.movies.movie.MovieViewModel;
+import okhttp3.OkHttpClient;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_LOW;
-import static kudos26.movies.Constants.INTENT_KEY_MOVIE_ID;
+import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemClickListener {
 
     private static final String KEY_TOOLBAR_TITLE = "TOOLBAR_TITLE";
     private static boolean mTwoPane;
@@ -48,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Stetho.initializeWithDefaults(this);
+        new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
         final MovieListAdapter movieListAdapter = new MovieListAdapter(this);
@@ -68,27 +80,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        mMovieViewModel.getSortCriteria().observe(this, new Observer<Integer>() {
+        mMovieViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieEntity>>() {
             @Override
-            public void onChanged(Integer integer) {
-                mMovieViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieEntity>>() {
-                    @Override
-                    public void onChanged(List<MovieEntity> movies) {
-                        if (movies != null) {
-                            movieListAdapter.setMovies(movies);
-                        }
-                    }
-                });
+            public void onChanged(List<MovieEntity> movies) {
+                if (movies != null) {
+                    movieListAdapter.setMovies(movies);
+                }
             }
         });
 
-        findViewById(R.id.fab_favorite).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fab_scroll_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mMovieRecyclerView.scrollToPosition(0);
             }
         });
-
     }
 
     @Override
@@ -130,6 +136,50 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_menu, menu);
         return true;
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onItemClickListener(final MovieEntity movie) {
+        if (mTwoPane) {
+            final FloatingActionButton favoriteButton = findViewById(R.id.fab_favorite);
+            favoriteButton.setVisibility(View.VISIBLE);
+            if (movie.isFavorite()) {
+                favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
+            } else {
+                favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
+            }
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        mMovieViewModel.updateFavorite(movie.getId());
+                        if (mMovieViewModel.isFavorite(movie.getId())) {
+                            favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
+                        } else {
+                            favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
+                        }
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(KEY_MOVIE_ENTITY, movie);
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
+            this.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(KEY_MOVIE_ENTITY, movie);
+            startActivity(intent);
+        }
     }
 
     public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
@@ -177,20 +227,7 @@ public class MainActivity extends AppCompatActivity {
             movieHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putInt(INTENT_KEY_MOVIE_ID, mMovies.get(position).getId());
-                        MovieDetailFragment fragment = new MovieDetailFragment();
-                        fragment.setArguments(arguments);
-                        mParent.getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.movie_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Intent intent = new Intent(mParent, MovieDetailActivity.class);
-                        intent.putExtra(INTENT_KEY_MOVIE_ID, mMovies.get(position).getId());
-                        mParent.startActivity(intent);
-                    }
+                    mParent.onItemClickListener(mMovies.get(position));
                 }
             });
             if (position + 1 == getItemCount()) {

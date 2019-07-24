@@ -1,4 +1,4 @@
-package kudos26.movies.room;
+package kudos26.movies;
 
 
 import android.content.Context;
@@ -7,8 +7,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import kudos26.movies.movie.MovieEntity;
+import kudos26.movies.movie.MoviesDao;
 import kudos26.movies.review.ReviewEntity;
+import kudos26.movies.review.ReviewsDao;
 import kudos26.movies.trailer.TrailerEntity;
+import kudos26.movies.trailer.TrailersDao;
 
 @androidx.room.Database(entities = {MovieEntity.class, ReviewEntity.class, TrailerEntity.class}, version = 1, exportSchema = false)
 public abstract class Database extends RoomDatabase {

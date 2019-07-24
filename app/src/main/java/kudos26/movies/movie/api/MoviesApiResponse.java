@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import kudos26.movies.movie.MovieObject;
-
 public class MoviesApiResponse {
 
     private static final String KEY_PAGE = "page";

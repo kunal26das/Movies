@@ -40,7 +40,7 @@ import kudos26.movies.trailer.TrailerViewModel;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_HIGH;
 import static kudos26.movies.Constants.BASE_URL_YOUTUBE;
-import static kudos26.movies.Constants.INTENT_KEY_MOVIE_ID;
+import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -53,15 +53,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        mMovieEntity = getIntent().getParcelableExtra(KEY_MOVIE_ENTITY);
+
         final TextView infoTextView = findViewById(R.id.tv_info);
-        final FloatingActionButton favoriteButton = findViewById(R.id.fab_favorite);
+        final FloatingActionButton favoriteButton = findViewById(R.id.fab_scroll_top);
         final RatingBar movieRatingBar = findViewById(R.id.movie_rating_bar);
         final TextView synopsisTextView = findViewById(R.id.tv_movie_synopsis);
         final ImageView toolbarPosterImageView = findViewById(R.id.iv_toolbar_poster);
-        final int movieId = getIntent().getIntExtra(INTENT_KEY_MOVIE_ID, 0);
         final MovieViewModel mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-
-        mMovieEntity = mMovieViewModel.getMovie(movieId);
 
         if (getSupportActionBar() == null) {
             Toolbar toolbar = findViewById(R.id.detail_toolbar);
@@ -89,9 +88,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mMovieViewModel.updateFavorite(movieId);
+                mMovieViewModel.updateFavorite(mMovieEntity.getId());
                 try {
-                    if (mMovieViewModel.isFavorite(movieId)) {
+                    if (mMovieViewModel.isFavorite(mMovieEntity.getId())) {
                         favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                                 R.mipmap.ic_heart_filled_foreground));
                     } else {

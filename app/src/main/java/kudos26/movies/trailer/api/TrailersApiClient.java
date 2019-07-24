@@ -1,5 +1,7 @@
 package kudos26.movies.trailer.api;
 
+import android.util.Log;
+
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -8,7 +10,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import kudos26.movies.trailer.TrailerObject;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -44,6 +45,8 @@ public class TrailersApiClient {
 
                     @Override
                     public void onSuccess(TrailersApiResponse trailersApiResponse) {
+                        Log.i("Trailers", trailersApiResponse.getmId() + "");
+                        Log.i("Trailers", trailersApiResponse.getTrailers().size() + "");
                         if (trailersApiResponse != null) {
                             List<TrailerObject> trailers = trailersApiResponse.getTrailers();
                             for (TrailerObject trailer : trailers) {

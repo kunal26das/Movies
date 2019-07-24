@@ -1,4 +1,4 @@
-package kudos26.movies.room;
+package kudos26.movies.movie;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,13 +8,11 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import kudos26.movies.movie.MovieEntity;
-
+import static kudos26.movies.Database.TABLE_MOVIES;
 import static kudos26.movies.movie.MovieEntity.COL_FAVORITE;
 import static kudos26.movies.movie.MovieEntity.COL_ID;
 import static kudos26.movies.movie.MovieEntity.COL_POPULARITY;
 import static kudos26.movies.movie.MovieEntity.COL_VOTE_AVERAGE;
-import static kudos26.movies.room.Database.TABLE_MOVIES;
 
 @Dao
 public interface MoviesDao {

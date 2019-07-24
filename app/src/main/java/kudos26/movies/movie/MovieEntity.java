@@ -1,15 +1,20 @@
 package kudos26.movies.movie;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static kudos26.movies.room.Database.TABLE_MOVIES;
+import kudos26.movies.movie.api.MovieObject;
+
+import static kudos26.movies.Database.TABLE_MOVIES;
 
 @Entity(tableName = TABLE_MOVIES)
-public class MovieEntity {
+public class MovieEntity implements Parcelable {
 
     public static final String COL_ID = "id";
     public static final String COL_TITLE = "title";
@@ -152,5 +157,45 @@ public class MovieEntity {
 
     public void setFavourite(@NonNull Boolean mFavourite) {
         this.mFavorite = mFavourite;
+    }
+
+    public static final Parcelable.Creator<MovieEntity> CREATOR = new Parcelable.Creator<MovieEntity>() {
+        @Override
+        public MovieEntity createFromParcel(Parcel source) {
+            return new MovieEntity(source);
+        }
+
+        @Override
+        public MovieEntity[] newArray(int size) {
+            return new MovieEntity[size];
+        }
+    };
+
+    protected MovieEntity(Parcel in) {
+        this.mId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.mTitle = in.readString();
+        this.mReleaseDate = in.readString();
+        this.mVoteAverage = (Float) in.readValue(Float.class.getClassLoader());
+        this.mPopularity = (Float) in.readValue(Float.class.getClassLoader());
+        this.mPosterPath = in.readString();
+        this.mOverview = in.readString();
+        this.mFavorite = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.mId);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mReleaseDate);
+        dest.writeValue(this.mVoteAverage);
+        dest.writeValue(this.mPopularity);
+        dest.writeString(this.mPosterPath);
+        dest.writeString(this.mOverview);
+        dest.writeValue(this.mFavorite);
     }
 }

@@ -5,7 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static kudos26.movies.room.Database.TABLE_TRAILERS;
+import kudos26.movies.trailer.api.TrailerObject;
+
+import static kudos26.movies.Database.TABLE_TRAILERS;
 
 @Entity(tableName = TABLE_TRAILERS)
 public class TrailerEntity {

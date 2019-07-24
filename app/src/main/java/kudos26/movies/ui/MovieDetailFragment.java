@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,15 +17,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 import kudos26.movies.R;
 import kudos26.movies.movie.MovieEntity;
-import kudos26.movies.movie.MovieViewModel;
 import kudos26.movies.review.ReviewEntity;
 import kudos26.movies.review.ReviewListAdapter;
 import kudos26.movies.review.ReviewViewModel;
@@ -35,13 +29,12 @@ import kudos26.movies.trailer.TrailerListAdapter;
 import kudos26.movies.trailer.TrailerViewModel;
 
 import static kudos26.movies.Constants.BASE_URL_YOUTUBE;
-import static kudos26.movies.Constants.INTENT_KEY_MOVIE_ID;
+import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
 
 public class MovieDetailFragment extends Fragment {
 
-    private String mShareableLink;
     private MovieEntity mMovieEntity;
-    private MovieViewModel mMovieViewModel;
+    private String mShareableLink;
 
     public MovieDetailFragment() {
     }
@@ -50,9 +43,8 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        if (getArguments() != null && getArguments().containsKey(INTENT_KEY_MOVIE_ID)) {
-            mMovieEntity = mMovieViewModel.getMovie(getArguments().getInt(INTENT_KEY_MOVIE_ID));
+        if (getArguments() != null && getArguments().containsKey(KEY_MOVIE_ENTITY)) {
+            mMovieEntity = getArguments().getParcelable(KEY_MOVIE_ENTITY);
         }
     }
 
@@ -70,7 +62,6 @@ public class MovieDetailFragment extends Fragment {
             final RatingBar movieRatingBar = getView().findViewById(R.id.movie_rating_bar);
             final TextView movieTitleTextView = getView().findViewById(R.id.tv_movie_title);
             final TextView synopsisTextView = getView().findViewById(R.id.tv_movie_synopsis);
-            final FloatingActionButton favoriteButton = getView().findViewById(R.id.fab_favorite);
 
             String movieInfo = mMovieEntity.getReleaseDate().split("-")[0] + "  |";
             movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
@@ -80,30 +71,6 @@ public class MovieDetailFragment extends Fragment {
 
             initTrailers();
             initReviews();
-
-            if (mMovieEntity.isFavorite()) {
-                favoriteButton.setImageDrawable(ContextCompat.getDrawable(getContext(),
-                        R.mipmap.ic_heart_filled_foreground));
-            }
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        mMovieViewModel.updateFavorite(mMovieEntity.getId());
-                        if (mMovieViewModel.isFavorite(mMovieEntity.getId())) {
-                            favoriteButton.setImageDrawable(ContextCompat.getDrawable(Objects.requireNonNull(getContext()),
-                                    R.mipmap.ic_heart_filled_foreground));
-                        } else {
-                            favoriteButton.setImageDrawable(ContextCompat.getDrawable(Objects.requireNonNull(getContext()),
-                                    R.mipmap.ic_heart_outline_foreground));
-                        }
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
     }
 

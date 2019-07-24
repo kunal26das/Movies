@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import kudos26.movies.trailer.TrailerObject;
-
 public class TrailersApiResponse {
 
     private static final String KEY_ID = "id";
@@ -26,15 +24,8 @@ public class TrailersApiResponse {
         return mId;
     }
 
-    public void setmId(Integer mId) {
-        this.mId = mId;
-    }
-
     public List<TrailerObject> getTrailers() {
         return mTrailers;
     }
 
-    public void setmTrailers(List<TrailerObject> mTrailers) {
-        this.mTrailers = mTrailers;
-    }
 }

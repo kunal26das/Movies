@@ -1,4 +1,4 @@
-package kudos26.movies.room;
+package kudos26.movies.trailer;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,9 +8,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import kudos26.movies.trailer.TrailerEntity;
-
-import static kudos26.movies.room.Database.TABLE_TRAILERS;
+import static kudos26.movies.Database.TABLE_TRAILERS;
 import static kudos26.movies.trailer.TrailerEntity.COL_ID_MOVIE;
 
 @Dao

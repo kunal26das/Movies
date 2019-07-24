@@ -40,12 +40,23 @@
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_favorite"
-        android:layout_height="match_parent"
+        android:id="@+id/fab_scroll_top"
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:fitsSystemWindows="false"
+        android:visibility="invisible"
+        app:srcCompat="@mipmap/ic_up_foreground" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_height="wrap_content"
+        android:id="@+id/fab_favorite"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
         android:fitsSystemWindows="false"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:srcCompat="@mipmap/ic_up_foreground" />
+        app:srcCompat="@mipmap/ic_heart_outline_foreground" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

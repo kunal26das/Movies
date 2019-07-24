@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import kudos26.movies.room.Database;
-import kudos26.movies.room.TrailersDao;
+import kudos26.movies.Database;
+import kudos26.movies.trailer.api.TrailerObject;
 import kudos26.movies.trailer.api.TrailersApiCallback;
 import kudos26.movies.trailer.api.TrailersApiClient;
 

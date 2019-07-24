@@ -1,4 +1,4 @@
-package kudos26.movies.movie;
+package kudos26.movies.movie.api;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

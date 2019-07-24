@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import kudos26.movies.Database;
+import kudos26.movies.review.api.ReviewObject;
 import kudos26.movies.review.api.ReviewsApiCallback;
 import kudos26.movies.review.api.ReviewsApiClient;
-import kudos26.movies.room.Database;
-import kudos26.movies.room.ReviewsDao;
 
 import static android.provider.MediaStore.Video.VideoColumns.LANGUAGE;
 import static kudos26.movies.Constants.API_KEY;

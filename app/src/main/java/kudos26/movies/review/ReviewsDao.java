@@ -1,4 +1,4 @@
-package kudos26.movies.room;
+package kudos26.movies.review;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,10 +8,8 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import kudos26.movies.review.ReviewEntity;
-
+import static kudos26.movies.Database.TABLE_REVIEWS;
 import static kudos26.movies.review.ReviewEntity.COL_ID_MOVIE;
-import static kudos26.movies.room.Database.TABLE_REVIEWS;
 
 @Dao
 public interface ReviewsDao {

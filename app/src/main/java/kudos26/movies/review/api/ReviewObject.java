@@ -1,4 +1,4 @@
-package kudos26.movies.review;
+package kudos26.movies.review.api;
 
 import androidx.annotation.NonNull;
 
