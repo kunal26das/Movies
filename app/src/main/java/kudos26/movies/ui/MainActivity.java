@@ -13,14 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -32,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import kudos26.movies.R;
 import kudos26.movies.movie.MovieEntity;
 import kudos26.movies.movie.MovieViewModel;
-import okhttp3.OkHttpClient;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_LOW;
 import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
@@ -56,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-        new OkHttpClient.Builder()
-                .addNetworkInterceptor(new StethoInterceptor())
-                .build();
 
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
@@ -80,21 +74,13 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         }
 
         mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        mMovieViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieEntity>>() {
-            @Override
-            public void onChanged(List<MovieEntity> movies) {
-                if (movies != null) {
-                    movieListAdapter.setMovies(movies);
-                }
+        mMovieViewModel.getMovies().observe(MainActivity.this, movies -> {
+            if (movies != null) {
+                movieListAdapter.setMovies(movies);
             }
         });
 
-        findViewById(R.id.fab_scroll_top).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMovieRecyclerView.scrollToPosition(0);
-            }
-        });
+        findViewById(R.id.fab_scroll_top).setOnClickListener(view -> mMovieRecyclerView.scrollToPosition(0));
     }
 
     @Override
@@ -230,8 +216,9 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                     mParent.onItemClickListener(mMovies.get(position));
                 }
             });
-            if (position + 1 == getItemCount()) {
-                int page = ((position + 1) / 20) + 1;
+            int itemCount = getItemCount();
+            if (position == itemCount - 1) {
+                int page = itemCount / 20 + 1;
                 mMovieViewModel.fetchMovies(page);
             }
         }

@@ -6,14 +6,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import kudos26.movies.Database;
 import kudos26.movies.review.api.ReviewObject;
 import kudos26.movies.review.api.ReviewsApiCallback;
 import kudos26.movies.review.api.ReviewsApiClient;
 
-import static android.provider.MediaStore.Video.VideoColumns.LANGUAGE;
 import static kudos26.movies.Constants.API_KEY;
+import static kudos26.movies.Constants.LANGUAGE_EN_US;
 
 public class ReviewViewModel extends AndroidViewModel {
 
@@ -29,13 +31,15 @@ public class ReviewViewModel extends AndroidViewModel {
     }
 
     // Repository
-    public static class ReviewRepository {
+    public class ReviewRepository {
 
-        private static ReviewsDao mDao;
-        private static ReviewsApiClient mApiClient;
+        private ReviewsDao mDao;
+        private ReviewsApiClient mApiClient;
+        private ExecutorService mExecutorService;
 
         ReviewRepository(Application application) {
             mDao = Database.getDatabase(application).getReviewsDao();
+            mExecutorService = Executors.newSingleThreadExecutor();
             mApiClient = new ReviewsApiClient();
         }
 
@@ -43,14 +47,14 @@ public class ReviewViewModel extends AndroidViewModel {
             mApiClient.getReviews(new ReviewsApiCallback() {
                 @Override
                 public void onSuccess(ReviewObject review) {
-                    mDao.insertReview(new ReviewEntity(movieId, review));
+                    mExecutorService.submit(() -> mDao.insertReview(new ReviewEntity(movieId, review)));
                 }
 
                 @Override
                 public void onFailure() {
 
                 }
-            }, movieId, API_KEY, LANGUAGE, 1);
+            }, movieId, API_KEY, LANGUAGE_EN_US, 1);
             return mDao.getReviews(movieId);
         }
     }

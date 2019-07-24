@@ -19,7 +19,7 @@ import kudos26.movies.movie.api.MoviesApiCallback;
 import kudos26.movies.movie.api.MoviesApiClient;
 
 import static kudos26.movies.Constants.API_KEY;
-import static kudos26.movies.Constants.EN_US;
+import static kudos26.movies.Constants.LANGUAGE_EN_US;
 
 public class MovieViewModel extends AndroidViewModel {
 
@@ -177,7 +177,7 @@ public class MovieViewModel extends AndroidViewModel {
                         public void onFailure(Throwable e) {
 
                         }
-                    }, API_KEY, EN_US, page);
+                    }, API_KEY, LANGUAGE_EN_US, page);
                 } else if (mSortCriteria.getValue() == TOP_RATED_MOVIES) {
                     mMoviesApiClient.getTopRatedMovies(new MoviesApiCallback() {
                         @Override
@@ -194,7 +194,7 @@ public class MovieViewModel extends AndroidViewModel {
                         public void onFailure(Throwable e) {
 
                         }
-                    }, API_KEY, EN_US, page);
+                    }, API_KEY, LANGUAGE_EN_US, page);
                 }
             }
         }

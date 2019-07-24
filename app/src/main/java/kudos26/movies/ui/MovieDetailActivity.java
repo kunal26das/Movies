@@ -56,10 +56,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         mMovieEntity = getIntent().getParcelableExtra(KEY_MOVIE_ENTITY);
 
         final TextView infoTextView = findViewById(R.id.tv_info);
-        final FloatingActionButton favoriteButton = findViewById(R.id.fab_scroll_top);
         final RatingBar movieRatingBar = findViewById(R.id.movie_rating_bar);
+        final TextView movieTitleTextView = findViewById(R.id.tv_movie_title);
         final TextView synopsisTextView = findViewById(R.id.tv_movie_synopsis);
         final ImageView toolbarPosterImageView = findViewById(R.id.iv_toolbar_poster);
+        final FloatingActionButton favoriteButton = findViewById(R.id.fab_scroll_top);
         final MovieViewModel mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
         if (getSupportActionBar() == null) {
@@ -76,6 +77,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         String movieInfo = mMovieEntity.getReleaseDate().split("-")[0] + "  |";
         movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
         synopsisTextView.setText(mMovieEntity.getOverview());
+        movieTitleTextView.setVisibility(View.GONE);
         infoTextView.setText(movieInfo);
 
         initTrailers();
@@ -85,23 +87,20 @@ public class MovieDetailActivity extends AppCompatActivity {
             favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                     R.mipmap.ic_heart_filled_foreground));
         }
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMovieViewModel.updateFavorite(mMovieEntity.getId());
-                try {
-                    if (mMovieViewModel.isFavorite(mMovieEntity.getId())) {
-                        favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                                R.mipmap.ic_heart_filled_foreground));
-                    } else {
-                        favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                                R.mipmap.ic_heart_outline_foreground));
-                    }
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        favoriteButton.setOnClickListener(view -> {
+            mMovieViewModel.updateFavorite(mMovieEntity.getId());
+            try {
+                if (mMovieViewModel.isFavorite(mMovieEntity.getId())) {
+                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                            R.mipmap.ic_heart_filled_foreground));
+                } else {
+                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                            R.mipmap.ic_heart_outline_foreground));
                 }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
 

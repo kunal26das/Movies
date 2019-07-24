@@ -50,7 +50,7 @@ public class MovieDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.content_detail, container, false);
         return rootView;
     }
 
@@ -67,6 +67,7 @@ public class MovieDetailFragment extends Fragment {
             movieRatingBar.setRating(mMovieEntity.getVoteAverage() / 2);
             synopsisTextView.setText(mMovieEntity.getOverview());
             movieTitleTextView.setText(mMovieEntity.getTitle());
+            movieTitleTextView.setVisibility(View.VISIBLE);
             infoTextView.setText(movieInfo);
 
             initTrailers();
