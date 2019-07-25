@@ -5,7 +5,7 @@
     android:id="@+id/movie_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteColor"
+    android:background="@android:color/transparent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
@@ -18,13 +18,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="16dp"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp"
             android:textSize="20sp"
             android:visibility="gone" />
 
         <LinearLayout
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -33,10 +35,8 @@
                 android:id="@+id/tv_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
+                android:paddingStart="20dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="16dp"
                 android:textSize="16sp"
                 tools:text="Info" />
 
@@ -54,8 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:visibility="visible"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="4dp">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,24 +86,37 @@
             android:id="@+id/cv_movie_trailers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_margin="16dp"
             android:visibility="visible"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="4dp">
+            app:cardCornerRadius="8dp"
+            app:cardElevation="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
-                    android:paddingEnd="0dp"
-                    android:text="Trailers"
-                    android:textSize="20sp" />
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="Trailers"
+                        android:textSize="20sp" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_trailers"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:indeterminate="true"
+                        android:visibility="visible" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_movie_trailers"
@@ -115,24 +129,36 @@
             android:id="@+id/cv_movie_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_margin="16dp"
             android:visibility="visible"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="4dp">
+            app:cardCornerRadius="8dp"
+            app:cardElevation="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Reviews"
-                    android:textSize="20sp" />
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="Reviews"
+                        android:textSize="20sp" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_reviews"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:indeterminate="true" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_movie_reviews"

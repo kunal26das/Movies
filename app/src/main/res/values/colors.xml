@@ -5,6 +5,6 @@
   <color name="primaryColor">#26a69a</color>
   <color name="primaryLightColor">#64d8cb</color>
   <color name="primaryDarkColor">#00766c</color>
-    <!--<color name="primaryTextColor">#000000</color>-->
+    <color name="blurColor">#66000000</color>
     <color name="primaryColorTransparent">#26a69a00</color>
 </resources>

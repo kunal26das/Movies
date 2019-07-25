@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TrailerObject {
+public class Trailer {
 
     private static final String KEY_ID = "id";
     private static final String KEY_ISO_LANGUAGE = "iso_639_1";
@@ -39,14 +39,14 @@ public class TrailerObject {
     @SerializedName(KEY_TYPE)
     private String mType;
 
-    public TrailerObject(@NonNull String mId,
-                         @NonNull String mIsoLanguage,
-                         @NonNull String mIdLocale,
-                         @NonNull String mAddressKey,
-                         @NonNull String mName,
-                         @NonNull String mSite,
-                         @NonNull Integer mSize,
-                         @NonNull String mType) {
+    public Trailer(@NonNull String mId,
+                   @NonNull String mIsoLanguage,
+                   @NonNull String mIdLocale,
+                   @NonNull String mAddressKey,
+                   @NonNull String mName,
+                   @NonNull String mSite,
+                   @NonNull Integer mSize,
+                   @NonNull String mType) {
         this.mId = mId;
         this.mIsoLanguage = mIsoLanguage;
         this.mIdLocale = mIdLocale;

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -14,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import kudos26.movies.Database;
-import kudos26.movies.movie.api.MovieObject;
+import kudos26.movies.movie.api.Movie;
 import kudos26.movies.movie.api.MoviesApiCallback;
 import kudos26.movies.movie.api.MoviesApiClient;
 
@@ -28,41 +29,64 @@ public class MovieViewModel extends AndroidViewModel {
     private static final int FAVORITE_MOVIES = 3;
 
     private MovieRepository mMovieRepository;
-    private LiveData<List<MovieEntity>> mMovies;
+    private LiveData<List<Movie>> mFavoriteMovies;
     private MutableLiveData<Integer> mSortCriteria;
+    private MutableLiveData<List<Movie>> mPopularMovies;
+    private MutableLiveData<List<Movie>> mTopRatedMovies;
 
     public MovieViewModel(Application application) {
         super(application);
         mMovieRepository = new MovieRepository(application);
+
+        mPopularMovies = new MutableLiveData<>();
+        mPopularMovies.setValue(new ArrayList<>());
+
+        mTopRatedMovies = new MutableLiveData<>();
+        mTopRatedMovies.setValue(new ArrayList<>());
+
+        try {
+            mFavoriteMovies = mMovieRepository.getFavoriteMovies();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         mSortCriteria = new MutableLiveData<>();
         mSortCriteria.setValue(POPULAR_MOVIES);
-        fetchMovies(1);
     }
 
-    public LiveData<List<MovieEntity>> getMovies() {
+    public LiveData<List<Movie>> getMovies() {
+        return Transformations.switchMap(mSortCriteria, sortBy -> {
+            switch (sortBy) {
+                case POPULAR_MOVIES: {
+                    return mPopularMovies;
+                }
+                case TOP_RATED_MOVIES: {
+                    return mTopRatedMovies;
+                }
+                case FAVORITE_MOVIES: {
+                    return mFavoriteMovies;
+                }
+            }
+            return mPopularMovies;
+        });
+    }
 
-        mMovies = Transformations.switchMap(mSortCriteria,
-                sortBy -> {
-                    try {
-                        switch (sortBy) {
-                            case POPULAR_MOVIES: {
-                                return mMovieRepository.getPopularMovies();
-                            }
-                            case TOP_RATED_MOVIES: {
-                                return mMovieRepository.getTopRatedMovies();
-                            }
-                            case FAVORITE_MOVIES: {
-                                return mMovieRepository.getFavoriteMovies();
-                            }
-                        }
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                });
-        return mMovies;
+    private void mutatePopularMovies(Movie movie) {
+        List<Movie> tempList = mPopularMovies.getValue();
+        if (tempList != null) {
+            tempList.add(movie);
+        }
+        mPopularMovies.setValue(tempList);
+    }
+
+    private void mutateTopRatedMovies(Movie movie) {
+        List<Movie> tempList = mTopRatedMovies.getValue();
+        if (tempList != null) {
+            tempList.add(movie);
+        }
+        mTopRatedMovies.setValue(tempList);
     }
 
     public void fetchMovies(int page) {
@@ -71,46 +95,29 @@ public class MovieViewModel extends AndroidViewModel {
 
     public void switchToPopularMovies() {
         mSortCriteria.setValue(POPULAR_MOVIES);
-        try {
-            mMovies = mMovieRepository.getPopularMovies();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void switchTopTopRatedMovies() {
         mSortCriteria.setValue(TOP_RATED_MOVIES);
-        try {
-            mMovies = mMovieRepository.getTopRatedMovies();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void switchToFavoriteMovies() {
         mSortCriteria.setValue(FAVORITE_MOVIES);
-        try {
-            mMovies = mMovieRepository.getPopularMovies();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    }
+
+    public void updateFavorite(Movie movie) {
+        if (isFavorite(movie)) {
+            mMovieRepository.deleteMovie(movie);
+        } else {
+            mMovieRepository.insertMovie(movie);
         }
     }
 
-    public boolean isFavorite(int movieId) throws ExecutionException, InterruptedException {
-        return mMovieRepository.isFavorite(movieId);
+    public boolean isFavorite(Movie movie) {
+        List<Movie> tempList = mFavoriteMovies.getValue();
+        return tempList != null && tempList.contains(movie);
     }
 
-    public void updateFavorite(int movieId) {
-        mMovieRepository.updateFavorite(movieId);
-    }
-
-    // Repository
     class MovieRepository {
 
         private MoviesDao mDao;
@@ -120,43 +127,7 @@ public class MovieViewModel extends AndroidViewModel {
         MovieRepository(Application application) {
             mMoviesApiClient = new MoviesApiClient();
             mExecutorService = Executors.newSingleThreadExecutor();
-            mDao = Database.getDatabase(application).getMoviesDao();
-        }
-
-        LiveData<List<MovieEntity>> getPopularMovies() throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
-                @Override
-                public LiveData<List<MovieEntity>> call() {
-                    return mDao.getPopularMovies();
-                }
-            }).get();
-        }
-
-        LiveData<List<MovieEntity>> getTopRatedMovies() throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
-                @Override
-                public LiveData<List<MovieEntity>> call() {
-                    return mDao.getTopRatedMovies();
-                }
-            }).get();
-        }
-
-        LiveData<List<MovieEntity>> getFavoriteMovies() throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<LiveData<List<MovieEntity>>>() {
-                @Override
-                public LiveData<List<MovieEntity>> call() {
-                    return mDao.getFavoriteMovies();
-                }
-            }).get();
-        }
-
-        MovieEntity getMovie(final int movieId) throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<MovieEntity>() {
-                @Override
-                public MovieEntity call() throws Exception {
-                    return mDao.getMovie(movieId);
-                }
-            }).get();
+            mDao = Database.getDatabase(application).getFavoriteMoviesDao();
         }
 
         void fetchMovies(int page) {
@@ -164,13 +135,8 @@ public class MovieViewModel extends AndroidViewModel {
                 if (mSortCriteria.getValue() == POPULAR_MOVIES) {
                     mMoviesApiClient.getPopularMovies(new MoviesApiCallback() {
                         @Override
-                        public void onSuccess(final MovieObject movie) {
-                            mExecutorService.submit(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mDao.insertMovie(new MovieEntity(movie, false));
-                                }
-                            });
+                        public void onSuccess(final Movie movie) {
+                            mutatePopularMovies(movie);
                         }
 
                         @Override
@@ -181,13 +147,8 @@ public class MovieViewModel extends AndroidViewModel {
                 } else if (mSortCriteria.getValue() == TOP_RATED_MOVIES) {
                     mMoviesApiClient.getTopRatedMovies(new MoviesApiCallback() {
                         @Override
-                        public void onSuccess(final MovieObject movie) {
-                            mExecutorService.submit(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mDao.insertMovie(new MovieEntity(movie, false));
-                                }
-                            });
+                        public void onSuccess(final Movie movie) {
+                            mutateTopRatedMovies(movie);
                         }
 
                         @Override
@@ -199,21 +160,24 @@ public class MovieViewModel extends AndroidViewModel {
             }
         }
 
-        boolean isFavorite(final int movieId) throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<Boolean>() {
+        LiveData<List<Movie>> getFavoriteMovies() throws ExecutionException, InterruptedException {
+            return mExecutorService.submit(new Callable<LiveData<List<Movie>>>() {
                 @Override
-                public Boolean call() throws Exception {
-                    return mDao.isFavorite(movieId);
+                public LiveData<List<Movie>> call() throws Exception {
+                    return mDao.getFavoriteMovies();
                 }
             }).get();
         }
 
-        void updateFavorite(final int movieId) {
-            mExecutorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    mDao.updateFavorite(movieId);
-                }
+        void insertMovie(Movie movie) {
+            mExecutorService.submit(() -> {
+                mDao.insertMovie(movie);
+            });
+        }
+
+        void deleteMovie(Movie movie) {
+            mExecutorService.submit(() -> {
+                mDao.deleteMovie(movie);
             });
         }
     }

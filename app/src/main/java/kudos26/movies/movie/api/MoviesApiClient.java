@@ -1,5 +1,7 @@
 package kudos26.movies.movie.api;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -8,6 +10,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -24,6 +27,7 @@ public class MoviesApiClient {
         if (mRetroFit == null) {
             mRetroFit = new Retrofit.Builder()
                     .baseUrl(BASE_URL_API)
+                    .client(new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
@@ -44,8 +48,8 @@ public class MoviesApiClient {
                     @Override
                     public void onSuccess(MoviesApiResponse moviesApiResponse) {
                         if (moviesApiResponse != null) {
-                            List<MovieObject> movies = moviesApiResponse.getResults();
-                            for (MovieObject movie : movies) {
+                            List<Movie> movies = moviesApiResponse.getResults();
+                            for (Movie movie : movies) {
                                 moviesApiCallback.onSuccess(movie);
                             }
                         }
@@ -71,8 +75,8 @@ public class MoviesApiClient {
                     @Override
                     public void onSuccess(MoviesApiResponse moviesApiResponse) {
                         if (moviesApiResponse != null) {
-                            List<MovieObject> movies = moviesApiResponse.getResults();
-                            for (MovieObject movie : movies) {
+                            List<Movie> movies = moviesApiResponse.getResults();
+                            for (Movie movie : movies) {
                                 moviesApiCallback.onSuccess(movie);
                             }
                         }

@@ -25,13 +25,13 @@ public class ReviewsApiResponse {
     private int mTotalPages;
 
     @SerializedName(KEY_RESULTS)
-    private List<ReviewObject> mReviews;
+    private List<Review> mReviews;
 
     public ReviewsApiResponse(int mId,
                               int mPage,
                               int mTotalResults,
                               int mTotalPages,
-                              List<ReviewObject> mReviews) {
+                              List<Review> mReviews) {
         this.mId = mId;
         this.mPage = mPage;
         this.mTotalResults = mTotalResults;
@@ -71,11 +71,11 @@ public class ReviewsApiResponse {
         this.mTotalPages = mTotalPages;
     }
 
-    public List<ReviewObject> getResults() {
+    public List<Review> getResults() {
         return mReviews;
     }
 
-    public void setResults(List<ReviewObject> mResults) {
+    public void setResults(List<Review> mResults) {
         this.mReviews = mResults;
     }
 

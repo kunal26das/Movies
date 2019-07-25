@@ -7,7 +7,6 @@
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
-    android:showDividers="middle"
     tools:context=".ui.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,14 +22,20 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <TextView
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher_foreground" />
+
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Empty!"
             android:textColor="@android:color/darker_gray"
             android:textSize="18sp"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold|italic" />-->
     </FrameLayout>
 
 </LinearLayout>

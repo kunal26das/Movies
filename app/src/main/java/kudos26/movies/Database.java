@@ -6,29 +6,22 @@ import android.content.Context;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import kudos26.movies.movie.MovieEntity;
 import kudos26.movies.movie.MoviesDao;
-import kudos26.movies.review.ReviewEntity;
-import kudos26.movies.review.ReviewsDao;
-import kudos26.movies.trailer.TrailerEntity;
-import kudos26.movies.trailer.TrailersDao;
+import kudos26.movies.movie.api.Movie;
 
-@androidx.room.Database(entities = {MovieEntity.class, ReviewEntity.class, TrailerEntity.class}, version = 1, exportSchema = false)
+@androidx.room.Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class Database extends RoomDatabase {
 
-    public static final String TABLE_MOVIES = "movies_table";
-    public static final String TABLE_REVIEWS = "reviews_table";
-    public static final String TABLE_TRAILERS = "trailers_table";
-
-    private static final String DATABASE = "database";
+    public static final String TABLE_MOVIES_FAVORITES = "favorite_movies_table";
     private static volatile Database databaseInstance;
+    private static final String DATABASE_MOVIES = "movies_database";
 
     public static Database getDatabase(final Context context) {
         if (databaseInstance == null) {
             synchronized (Database.class) {
                 if (databaseInstance == null) {
                     databaseInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            Database.class, DATABASE)
+                            Database.class, DATABASE_MOVIES)
                             .fallbackToDestructiveMigration()
                             .build();
                 }
@@ -37,9 +30,5 @@ public abstract class Database extends RoomDatabase {
         return databaseInstance;
     }
 
-    public abstract MoviesDao getMoviesDao();
-
-    public abstract ReviewsDao getReviewsDao();
-
-    public abstract TrailersDao getTrailersDao();
+    public abstract MoviesDao getFavoriteMoviesDao();
 }

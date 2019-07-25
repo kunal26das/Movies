@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ReviewObject {
+public class Review {
 
     private static final String KEY_ID = "id";
     private static final String KEY_URL = "url";
@@ -23,10 +23,10 @@ public class ReviewObject {
     @SerializedName(KEY_URL)
     private String mUrl;
 
-    public ReviewObject(@NonNull String mId,
-                        @NonNull String mContent,
-                        @NonNull String mAuthor,
-                        @NonNull String mUrl) {
+    public Review(@NonNull String mId,
+                  @NonNull String mContent,
+                  @NonNull String mAuthor,
+                  @NonNull String mUrl) {
         this.mId = mId;
         this.mContent = mContent;
         this.mAuthor = mAuthor;
@@ -34,22 +34,22 @@ public class ReviewObject {
     }
 
     @NonNull
-    public String getmId() {
+    public String getId() {
         return mId;
     }
 
     @NonNull
-    public String getmContent() {
+    public String getContent() {
         return mContent;
     }
 
     @NonNull
-    public String getmAuthor() {
+    public String getAuthor() {
         return mAuthor;
     }
 
     @NonNull
-    public String getmUrl() {
+    public String getUrl() {
         return mUrl;
     }
 }

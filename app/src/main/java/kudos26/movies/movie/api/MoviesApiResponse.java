@@ -21,12 +21,12 @@ public class MoviesApiResponse {
     private int mTotalPages;
 
     @SerializedName(KEY_RESULTS)
-    private List<MovieObject> mResults;
+    private List<Movie> mResults;
 
     public MoviesApiResponse(int mPage,
                              int mTotalResults,
                              int mTotalPages,
-                             List<MovieObject> mResults) {
+                             List<Movie> mResults) {
         this.mPage = mPage;
         this.mTotalResults = mTotalResults;
         this.mTotalPages = mTotalPages;
@@ -57,11 +57,11 @@ public class MoviesApiResponse {
         this.mTotalPages = mTotalPages;
     }
 
-    public List<MovieObject> getResults() {
+    public List<Movie> getResults() {
         return mResults;
     }
 
-    public void setResults(List<MovieObject> mResults) {
+    public void setResults(List<Movie> mResults) {
         this.mResults = mResults;
     }
 }

@@ -1,7 +1,7 @@
 package kudos26.movies.movie.api;
 
 public interface MoviesApiCallback {
-    void onSuccess(MovieObject movie);
+    void onSuccess(Movie movie);
 
     void onFailure(Throwable e);
 }

@@ -14,17 +14,18 @@ import java.util.Collections;
 import java.util.List;
 
 import kudos26.movies.R;
+import kudos26.movies.review.api.Review;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ReviewHolder> {
 
     private final LayoutInflater mLayoutInflater;
-    private List<ReviewEntity> mReviews = Collections.emptyList();
+    private List<Review> mReviews = Collections.emptyList();
 
     public ReviewListAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setReviews(List<ReviewEntity> reviews) {
+    public void setReviews(List<Review> reviews) {
         mReviews = reviews;
         notifyDataSetChanged();
     }
@@ -39,6 +40,12 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
     @Override
     public void onBindViewHolder(@NonNull ReviewHolder reviewHolder, int position) {
         reviewHolder.updateReview(mReviews.get(position), position + 1);
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) reviewHolder.itemView.getLayoutParams();
+        if (position > 0) {
+            layoutParams.setMargins(40, 0, 40, 40);
+        } else {
+            layoutParams.setMargins(40, 40, 40, 40);
+        }
     }
 
     @Override
@@ -71,7 +78,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
             });
         }
 
-        void updateReview(ReviewEntity review, int number) {
+        void updateReview(Review review, int number) {
             String serialNumber = "#" + number;
             mReviewNumber.setText(serialNumber);
             mReviewContent.setText(review.getContent().trim());

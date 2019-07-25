@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import kudos26.movies.R;
+import kudos26.movies.trailer.api.Trailer;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -29,13 +30,13 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
     private static final String BASE_URL_THUMBNAIL = "https://img.youtube.com/vi/";
     private static final String DEFAULT = "/maxresdefault.jpg";
     private final LayoutInflater mLayoutInflater;
-    private List<TrailerEntity> mTrailers = Collections.emptyList();
+    private List<Trailer> mTrailers = Collections.emptyList();
 
     public TrailerListAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setTrailers(List<TrailerEntity> trailers) {
+    public void setTrailers(List<Trailer> trailers) {
         mTrailers = trailers;
         notifyDataSetChanged();
     }
@@ -76,7 +77,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
             mTrailerShimmer = view.findViewById(R.id.shimmer_trailer);
         }
 
-        void updateTrailer(final TrailerEntity trailer) {
+        void updateTrailer(final Trailer trailer) {
             mYoutube.setVisibility(GONE);
             itemView.setOnClickListener(null);
             mTrailerShimmer.setVisibility(VISIBLE);
@@ -87,12 +88,9 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
                         public void onSuccess() {
                             mYoutube.setVisibility(VISIBLE);
                             mTrailerShimmer.setVisibility(GONE);
-                            itemView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(BASE_URL_YOUTUBE + trailer.getAddressKey()));
-                                    itemView.getContext().startActivity(youtubeIntent);
-                                }
+                            itemView.setOnClickListener(view -> {
+                                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(BASE_URL_YOUTUBE + trailer.getAddressKey()));
+                                itemView.getContext().startActivity(youtubeIntent);
                             });
                         }
 

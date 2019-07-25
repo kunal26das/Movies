@@ -4,13 +4,12 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import kudos26.movies.Database;
-import kudos26.movies.trailer.api.TrailerObject;
+import kudos26.movies.trailer.api.Trailer;
 import kudos26.movies.trailer.api.TrailersApiCallback;
 import kudos26.movies.trailer.api.TrailersApiClient;
 
@@ -19,49 +18,32 @@ import static kudos26.movies.Constants.LANGUAGE_EN_US;
 
 public class TrailerViewModel extends AndroidViewModel {
 
-    private TrailerRepository mTrailerRepository;
+    private TrailersApiClient mApiClient;
+    private MutableLiveData<List<Trailer>> mTrailers;
 
     public TrailerViewModel(Application application) {
         super(application);
-        mTrailerRepository = new TrailerRepository(application);
+        mTrailers = new MutableLiveData<>();
+        mApiClient = new TrailersApiClient();
+        mTrailers.setValue(new ArrayList<>());
     }
 
-    public LiveData<List<TrailerEntity>> getMovieTrailers(int movieId) {
-        return mTrailerRepository.getTrailers(movieId);
-    }
-
-    // Repository
-    public class TrailerRepository {
-
-        private TrailersDao mDao;
-        private TrailersApiClient mApiClient;
-        private ExecutorService mExecutorService;
-
-        TrailerRepository(Application application) {
-            mApiClient = new TrailersApiClient();
-            mExecutorService = Executors.newSingleThreadExecutor();
-            mDao = Database.getDatabase(application).getTrailersDao();
-        }
-
-        LiveData<List<TrailerEntity>> getTrailers(final int movieId) {
-            mApiClient.getTrailers(new TrailersApiCallback() {
-                @Override
-                public void onSuccess(final TrailerObject trailer) {
-                    mExecutorService.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDao.insertTrailer(new TrailerEntity(movieId, trailer));
-                        }
-                    });
+    public LiveData<List<Trailer>> getMovieTrailers(int movieId) {
+        mApiClient.getTrailers(new TrailersApiCallback() {
+            @Override
+            public void onSuccess(final Trailer trailer) {
+                List<Trailer> tempList = mTrailers.getValue();
+                if (tempList != null) {
+                    tempList.add(trailer);
                 }
+                mTrailers.setValue(tempList);
+            }
 
-                @Override
-                public void onError(Throwable error) {
+            @Override
+            public void onError(Throwable error) {
 
-                }
-            }, movieId, API_KEY, LANGUAGE_EN_US);
-            return mDao.getTrailers(movieId);
-        }
-
+            }
+        }, movieId, API_KEY, LANGUAGE_EN_US);
+        return mTrailers;
     }
 }

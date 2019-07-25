@@ -8,11 +8,10 @@
     tools:context=".ui.MovieDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="match_parent"
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        app:expanded="false"
         android:fitsSystemWindows="true"
+        android:layout_height="180dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout

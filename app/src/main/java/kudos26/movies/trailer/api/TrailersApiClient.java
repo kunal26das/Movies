@@ -1,6 +1,6 @@
 package kudos26.movies.trailer.api;
 
-import android.util.Log;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,6 +27,7 @@ public class TrailersApiClient {
         if (mRetroFit == null) {
             mRetroFit = new Retrofit.Builder()
                     .baseUrl(BASE_URL_API)
+                    .client(new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
@@ -45,11 +47,9 @@ public class TrailersApiClient {
 
                     @Override
                     public void onSuccess(TrailersApiResponse trailersApiResponse) {
-                        Log.i("Trailers", trailersApiResponse.getmId() + "");
-                        Log.i("Trailers", trailersApiResponse.getTrailers().size() + "");
                         if (trailersApiResponse != null) {
-                            List<TrailerObject> trailers = trailersApiResponse.getTrailers();
-                            for (TrailerObject trailer : trailers) {
+                            List<Trailer> trailers = trailersApiResponse.getTrailers();
+                            for (Trailer trailer : trailers) {
                                 trailersApiCallback.onSuccess(trailer);
                             }
                         }

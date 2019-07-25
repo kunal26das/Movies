@@ -1,7 +1,7 @@
 package kudos26.movies.review.api;
 
 public interface ReviewsApiCallback {
-    void onSuccess(ReviewObject review);
+    void onSuccess(Review review);
 
     void onFailure();
 }

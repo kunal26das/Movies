@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +26,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import kudos26.movies.R;
-import kudos26.movies.movie.MovieEntity;
+import kudos26.movies.movie.EndlessScrollListener;
 import kudos26.movies.movie.MovieViewModel;
+import kudos26.movies.movie.api.Movie;
 
 import static kudos26.movies.Constants.BASE_URL_IMAGE_LOW;
 import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
@@ -37,15 +38,16 @@ import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
 public class MainActivity extends AppCompatActivity implements ItemClickListener {
 
     private static final String KEY_TOOLBAR_TITLE = "TOOLBAR_TITLE";
-    private static boolean mTwoPane;
-    private MovieViewModel mMovieViewModel;
     private static final String KEY_SCROLL_POSITION = "SCROLL_POSITION";
-    private GridLayoutManager mGridLayoutManager;
     private static final String STRING_POPULAR_MOVIES = "Popular Movies";
     private static final String STRING_FAVORITE_MOVIES = "Favorite Movies";
     private static final String STRING_TOP_RATED_MOVIES = "Top Rated Movies";
+
     private Toolbar mToolbar;
+    private static boolean mTwoPane;
+    private MovieViewModel mMovieViewModel;
     private RecyclerView mMovieRecyclerView;
+    private GridLayoutManager mGridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +58,36 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
-        final MovieListAdapter movieListAdapter = new MovieListAdapter(this);
-        mGridLayoutManager = new GridLayoutManager(this, 2);
         mMovieRecyclerView = findViewById(R.id.rv_movie_list);
+
+        final MovieListAdapter movieListAdapter = new MovieListAdapter(this);
+        final ContentLoadingProgressBar mProgressBar = findViewById(R.id.progress_movies);
+
+        mGridLayoutManager = new GridLayoutManager(this, 2);
         mMovieRecyclerView.setLayoutManager(mGridLayoutManager);
         mMovieRecyclerView.setAdapter(movieListAdapter);
         mMovieRecyclerView.setItemViewCacheSize(100);
+
+        mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        mMovieViewModel.getMovies().observe(this, movieListAdapter::setMovies);
+
+        final EndlessScrollListener endlessScrollListener = new EndlessScrollListener(mGridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                mMovieViewModel.fetchMovies(page);
+            }
+        };
+
+        mMovieRecyclerView.addOnScrollListener(endlessScrollListener);
+        endlessScrollListener.getLoadingStatus().observe(this, loading -> {
+            if (loading) {
+                mProgressBar.show();
+            } else {
+                mProgressBar.hide();
+            }
+        });
+
+        findViewById(R.id.fab_scroll_top).setOnClickListener(view -> mMovieRecyclerView.scrollToPosition(0));
 
         if (getSupportActionBar() == null) {
             mToolbar = findViewById(R.id.toolbar);
@@ -72,15 +98,6 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
             mToolbar.setTitle(savedInstanceState.getString(KEY_TOOLBAR_TITLE));
             mGridLayoutManager.scrollToPosition(savedInstanceState.getInt(KEY_SCROLL_POSITION));
         }
-
-        mMovieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        mMovieViewModel.getMovies().observe(MainActivity.this, movies -> {
-            if (movies != null) {
-                movieListAdapter.setMovies(movies);
-            }
-        });
-
-        findViewById(R.id.fab_scroll_top).setOnClickListener(view -> mMovieRecyclerView.scrollToPosition(0));
     }
 
     @Override
@@ -126,31 +143,19 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
     @SuppressLint("RestrictedApi")
     @Override
-    public void onItemClickListener(final MovieEntity movie) {
+    public void onItemClickListener(final Movie movie) {
         if (mTwoPane) {
             final FloatingActionButton favoriteButton = findViewById(R.id.fab_favorite);
             favoriteButton.setVisibility(View.VISIBLE);
-            if (movie.isFavorite()) {
+
+            if (mMovieViewModel.isFavorite(movie)) {
                 favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
             } else {
                 favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
             }
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        mMovieViewModel.updateFavorite(movie.getId());
-                        if (mMovieViewModel.isFavorite(movie.getId())) {
-                            favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
-                        } else {
-                            favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
-                        }
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+
+            favoriteButton.setOnClickListener(view -> {
+                mMovieViewModel.updateFavorite(movie);
             });
 
             Bundle arguments = new Bundle();
@@ -171,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
 
         private MainActivity mParent;
-        private List<MovieEntity> mMovies = Collections.emptyList();
+        private List<Movie> mLiveData = Collections.emptyList();
 
         MovieListAdapter(MainActivity parent) {
             mParent = parent;
@@ -179,11 +184,14 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
         @Override
         public int getItemCount() {
-            return mMovies.size();
+            return mLiveData.size();
         }
 
-        void setMovies(List<MovieEntity> movies) {
-            mMovies = movies;
+        void setMovies(List<Movie> movies) {
+            mLiveData = movies;
+            if (mLiveData.isEmpty()) {
+                mMovieViewModel.fetchMovies(1);
+            }
             notifyDataSetChanged();
         }
 
@@ -196,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
         @Override
         public void onBindViewHolder(@NonNull MovieHolder movieHolder, final int position) {
-            movieHolder.updateMovie(mMovies.get(position));
+            movieHolder.updateMovie(mLiveData.get(position));
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) movieHolder.itemView.getLayoutParams();
-            if (position % 2 == 0) {
+            /*if (position % 2 == 0) {
                 layoutParams.setMargins(32, 32, 32, 0);
                 int itemCount = getItemCount();
                 if (position == itemCount - 2 || position == itemCount - 1) {
@@ -209,23 +217,12 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                 if (position == getItemCount() - 1) {
                     layoutParams.setMargins(0, 32, 32, 32);
                 }
-            }
-            movieHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mParent.onItemClickListener(mMovies.get(position));
-                }
-            });
-            int itemCount = getItemCount();
-            if (position == itemCount - 1) {
-                int page = itemCount / 20 + 1;
-                mMovieViewModel.fetchMovies(page);
-            }
+            }*/
+            movieHolder.itemView.setOnClickListener(view -> mParent.onItemClickListener(mLiveData.get(position)));
         }
 
         class MovieHolder extends RecyclerView.ViewHolder {
 
-            int mMovieId;
             TextView mMovieTitle;
             ImageView mMoviePoster;
             ShimmerFrameLayout mMovieShimmer;
@@ -237,8 +234,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                 mMoviePoster = view.findViewById(R.id.iv_movie_poster);
             }
 
-            void updateMovie(MovieEntity movie) {
-                mMovieId = movie.getId();
+            void updateMovie(Movie movie) {
                 mMovieTitle.setText(movie.getTitle());
                 mMovieShimmer.setVisibility(View.VISIBLE);
                 String moviePosterPath = movie.getPosterPath();

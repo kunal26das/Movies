@@ -13,9 +13,9 @@ public class TrailersApiResponse {
     private Integer mId;
 
     @SerializedName(KEY_RESULTS)
-    private List<TrailerObject> mTrailers;
+    private List<Trailer> mTrailers;
 
-    public TrailersApiResponse(Integer mId, List<TrailerObject> mTrailers) {
+    public TrailersApiResponse(Integer mId, List<Trailer> mTrailers) {
         this.mId = mId;
         this.mTrailers = mTrailers;
     }
@@ -24,7 +24,7 @@ public class TrailersApiResponse {
         return mId;
     }
 
-    public List<TrailerObject> getTrailers() {
+    public List<Trailer> getTrailers() {
         return mTrailers;
     }
 

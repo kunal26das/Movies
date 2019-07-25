@@ -29,15 +29,25 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/whiteColor"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progress_movies"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-6dp"
+            android:layout_marginBottom="-6dp"
+            android:indeterminate="true" />
         <include layout="@layout/movie_list" />
-    </FrameLayout>
+    </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_scroll_top"
