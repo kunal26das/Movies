@@ -9,7 +9,6 @@ import androidx.lifecycle.Transformations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +27,7 @@ public class MovieViewModel extends AndroidViewModel {
     private static final int TOP_RATED_MOVIES = 2;
     private static final int FAVORITE_MOVIES = 3;
 
-    private MovieRepository mMovieRepository;
+    private MovieRepository mRepository;
     private LiveData<List<Movie>> mFavoriteMovies;
     private MutableLiveData<Integer> mSortCriteria;
     private MutableLiveData<List<Movie>> mPopularMovies;
@@ -36,7 +35,7 @@ public class MovieViewModel extends AndroidViewModel {
 
     public MovieViewModel(Application application) {
         super(application);
-        mMovieRepository = new MovieRepository(application);
+        mRepository = new MovieRepository(application);
 
         mPopularMovies = new MutableLiveData<>();
         mPopularMovies.setValue(new ArrayList<>());
@@ -45,7 +44,7 @@ public class MovieViewModel extends AndroidViewModel {
         mTopRatedMovies.setValue(new ArrayList<>());
 
         try {
-            mFavoriteMovies = mMovieRepository.getFavoriteMovies();
+            mFavoriteMovies = mRepository.getFavoriteMovies();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -90,7 +89,7 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void fetchMovies(int page) {
-        mMovieRepository.fetchMovies(page);
+        mRepository.fetchMovies(page);
     }
 
     public void switchToPopularMovies() {
@@ -105,17 +104,25 @@ public class MovieViewModel extends AndroidViewModel {
         mSortCriteria.setValue(FAVORITE_MOVIES);
     }
 
-    public void updateFavorite(Movie movie) {
-        if (isFavorite(movie)) {
-            mMovieRepository.deleteMovie(movie);
-        } else {
-            mMovieRepository.insertMovie(movie);
+    public boolean isFavorite(Movie movie) {
+        try {
+            return mRepository.isFavorite(movie) != null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
-    public boolean isFavorite(Movie movie) {
-        List<Movie> tempList = mFavoriteMovies.getValue();
-        return tempList != null && tempList.contains(movie);
+    public boolean updateFavorite(Movie movie) {
+        if (isFavorite(movie)) {
+            mRepository.deleteMovie(movie);
+            return false;
+        } else {
+            mRepository.insertMovie(movie);
+            return true;
+        }
     }
 
     class MovieRepository {
@@ -161,12 +168,7 @@ public class MovieViewModel extends AndroidViewModel {
         }
 
         LiveData<List<Movie>> getFavoriteMovies() throws ExecutionException, InterruptedException {
-            return mExecutorService.submit(new Callable<LiveData<List<Movie>>>() {
-                @Override
-                public LiveData<List<Movie>> call() throws Exception {
-                    return mDao.getFavoriteMovies();
-                }
-            }).get();
+            return mExecutorService.submit(() -> mDao.getFavoriteMovies()).get();
         }
 
         void insertMovie(Movie movie) {
@@ -179,6 +181,10 @@ public class MovieViewModel extends AndroidViewModel {
             mExecutorService.submit(() -> {
                 mDao.deleteMovie(movie);
             });
+        }
+
+        Movie isFavorite(final Movie movie) throws ExecutionException, InterruptedException {
+            return mExecutorService.submit(() -> mDao.isFavorite(movie.getId())).get();
         }
     }
 }

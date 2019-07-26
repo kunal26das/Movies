@@ -81,7 +81,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         favoriteButton.setOnClickListener(view -> {
-            mMovieViewModel.updateFavorite(mMovie);
+            if (mMovieViewModel.updateFavorite(mMovie)) {
+                favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
+            } else {
+                favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
+            }
         });
     }
 

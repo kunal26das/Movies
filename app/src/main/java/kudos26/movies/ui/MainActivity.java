@@ -155,7 +155,11 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
             }
 
             favoriteButton.setOnClickListener(view -> {
-                mMovieViewModel.updateFavorite(movie);
+                if (mMovieViewModel.updateFavorite(movie)) {
+                    favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_filled_foreground));
+                } else {
+                    favoriteButton.setImageDrawable(getDrawable(R.mipmap.ic_heart_outline_foreground));
+                }
             });
 
             Bundle arguments = new Bundle();
