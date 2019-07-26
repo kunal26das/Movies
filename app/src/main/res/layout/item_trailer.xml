@@ -4,18 +4,19 @@
     android:layout_width="320dp"
     android:layout_height="192dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="16dp">
+    app:cardElevation="8dp">
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_trailer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primaryColor"></com.facebook.shimmer.ShimmerFrameLayout>
+        android:background="@color/primaryColor" />
 
     <ImageView
         android:id="@+id/iv_trailer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/trailers"
         android:scaleType="centerCrop" />
 
     <ImageView
@@ -24,6 +25,7 @@
         android:layout_height="56dp"
         android:layout_gravity="center"
         android:src="@mipmap/ic_youtube_foreground"
+        android:contentDescription="@string/trailers"
         android:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

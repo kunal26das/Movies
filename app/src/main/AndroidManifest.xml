@@ -14,6 +14,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+
             android:name="kudos26.movies.ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

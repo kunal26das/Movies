@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -15,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +30,8 @@ import kudos26.movies.review.ReviewViewModel;
 import kudos26.movies.trailer.TrailerListAdapter;
 import kudos26.movies.trailer.TrailerViewModel;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static kudos26.movies.Constants.BASE_URL_IMAGE_HIGH;
 import static kudos26.movies.Constants.BASE_URL_YOUTUBE;
 import static kudos26.movies.Constants.KEY_MOVIE_ENTITY;
@@ -56,7 +58,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (getSupportActionBar() == null) {
             Toolbar toolbar = findViewById(R.id.detail_toolbar);
-            toolbar.setTitle(mMovie.getTitle());
+            toolbar.setTitle("");
             setSupportActionBar(toolbar);
         }
         ActionBar actionBar = getSupportActionBar();
@@ -68,7 +70,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         String movieInfo = mMovie.getReleaseDate().split("-")[0] + "  |";
         movieRatingBar.setRating(mMovie.getVoteAverage() / 2);
         synopsisTextView.setText(mMovie.getOverview());
-        movieTitleTextView.setVisibility(View.GONE);
+        movieTitleTextView.setText(mMovie.getTitle());
         infoTextView.setText(movieInfo);
 
         initTrailers();
@@ -90,6 +92,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void initTrailers() {
+        final CardView trailersCardView = findViewById(R.id.cv_movie_trailers);
         final ProgressBar trailersProgressBar = findViewById(R.id.progress_trailers);
         final RecyclerView trailersRecyclerView = findViewById(R.id.rv_movie_trailers);
         final TrailerListAdapter trailerListAdapter = new TrailerListAdapter(this);
@@ -100,13 +103,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailerViewModel.getMovieTrailers(mMovie.getId()).observe(this, trailers -> {
             if (trailers != null && !trailers.isEmpty()) {
                 trailerListAdapter.setTrailers(trailers);
-                trailersProgressBar.setVisibility(View.GONE);
+                trailersCardView.setVisibility(VISIBLE);
+                trailersProgressBar.setVisibility(GONE);
                 mShareableLink = BASE_URL_YOUTUBE + trailers.get(0).getAddressKey();
+            } else {
+                trailersCardView.setVisibility(GONE);
             }
         });
     }
 
     private void initReviews() {
+        final CardView reviewsCardView = findViewById(R.id.cv_movie_reviews);
         final ProgressBar reviewsProgressBar = findViewById(R.id.progress_reviews);
         final RecyclerView reviewRecyclerView = findViewById(R.id.rv_movie_reviews);
         final ReviewListAdapter reviewListAdapter = new ReviewListAdapter(this);
@@ -116,7 +123,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         mReviewViewModel.getMovieReviews(mMovie.getId()).observe(this, reviews -> {
             if (reviews != null && !reviews.isEmpty()) {
                 reviewListAdapter.setReviews(reviews);
-                reviewsProgressBar.setVisibility(View.GONE);
+                reviewsCardView.setVisibility(VISIBLE);
+                reviewsProgressBar.setVisibility(GONE);
+            } else {
+                reviewsCardView.setVisibility(GONE);
             }
         });
     }

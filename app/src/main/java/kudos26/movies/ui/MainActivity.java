@@ -87,15 +87,29 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
             }
         });
 
-        findViewById(R.id.fab_scroll_top).setOnClickListener(view -> mMovieRecyclerView.scrollToPosition(0));
-
         if (getSupportActionBar() == null) {
             mToolbar = findViewById(R.id.toolbar);
             mToolbar.setTitle(STRING_POPULAR_MOVIES);
             setSupportActionBar(mToolbar);
         }
         if (savedInstanceState != null) {
-            mToolbar.setTitle(savedInstanceState.getString(KEY_TOOLBAR_TITLE));
+            String title = savedInstanceState.getString(KEY_TOOLBAR_TITLE);
+            if (title != null) {
+                mToolbar.setTitle(title);
+                switch (title) {
+                    case STRING_POPULAR_MOVIES: {
+                        mMovieViewModel.switchToPopularMovies();
+                        break;
+                    }
+                    case STRING_TOP_RATED_MOVIES:
+                        mMovieViewModel.switchTopTopRatedMovies();
+                        break;
+                    case STRING_FAVORITE_MOVIES: {
+                        mMovieViewModel.switchToFavoriteMovies();
+                        break;
+                    }
+                }
+            }
             mGridLayoutManager.scrollToPosition(savedInstanceState.getInt(KEY_SCROLL_POSITION));
         }
     }
@@ -210,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         public void onBindViewHolder(@NonNull MovieHolder movieHolder, final int position) {
             movieHolder.updateMovie(mLiveData.get(position));
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) movieHolder.itemView.getLayoutParams();
-            /*if (position % 2 == 0) {
+            if (position % 2 == 0) {
                 layoutParams.setMargins(32, 32, 32, 0);
                 int itemCount = getItemCount();
                 if (position == itemCount - 2 || position == itemCount - 1) {
@@ -221,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                 if (position == getItemCount() - 1) {
                     layoutParams.setMargins(0, 32, 32, 32);
                 }
-            }*/
+            }
             movieHolder.itemView.setOnClickListener(view -> mParent.onItemClickListener(mLiveData.get(position)));
         }
 
