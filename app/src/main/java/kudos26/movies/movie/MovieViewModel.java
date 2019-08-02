@@ -132,7 +132,7 @@ public class MovieViewModel extends AndroidViewModel {
         private MoviesApiClient mMoviesApiClient;
 
         MovieRepository(Application application) {
-            mMoviesApiClient = new MoviesApiClient();
+            mMoviesApiClient = new MoviesApiClient(application);
             mExecutorService = Executors.newSingleThreadExecutor();
             mDao = Database.getDatabase(application).getFavoriteMoviesDao();
         }

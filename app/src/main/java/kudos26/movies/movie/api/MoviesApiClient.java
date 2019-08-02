@@ -1,38 +1,41 @@
 package kudos26.movies.movie.api;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
+import android.app.Application;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
+import kudos26.movies.dagger.AppController;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static kudos26.movies.Constants.BASE_URL_API;
 
 @Singleton
 public class MoviesApiClient {
 
-    private static Retrofit mRetroFit = null;
+    //private static Retrofit mRetroFit = null;
     private final MoviesApi mMoviesApi;
+    //private Application application;
 
-    public MoviesApiClient() {
-        if (mRetroFit == null) {
+    @Inject
+    Retrofit retrofit;
+
+    public MoviesApiClient(Application application) {
+        ((AppController) application).getAppComponent().inject(this);
+        /*if (mRetroFit == null) {
             mRetroFit = new Retrofit.Builder()
                     .baseUrl(BASE_URL_API)
                     .client(new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
-        }
-        mMoviesApi = mRetroFit.create(MoviesApi.class);
+        }*/
+        mMoviesApi = retrofit.create(MoviesApi.class);
+        //this.application = application;
     }
 
     public void getPopularMovies(final MoviesApiCallback moviesApiCallback, String apiKey, String language, int page) {

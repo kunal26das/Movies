@@ -3,7 +3,7 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "kudos26.movies"
         minSdkVersion 23
@@ -39,7 +39,9 @@ dependencies {
     // Dagger 2
     implementation 'com.google.dagger:dagger:2.23.2'
     implementation 'com.google.dagger:dagger-android:2.23.2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.23.2'
     implementation "com.google.dagger:dagger-android-support:2.23.2"
+    annotationProcessor "com.google.dagger:dagger-android-processor:2.23.2"
 
     // FireBase
     implementation 'com.google.firebase:firebase-core:17.0.1'
