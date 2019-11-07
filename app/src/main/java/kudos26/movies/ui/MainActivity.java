@@ -101,9 +101,10 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                         mMovieViewModel.switchToPopularMovies();
                         break;
                     }
-                    case STRING_TOP_RATED_MOVIES:
+                    case STRING_TOP_RATED_MOVIES: {
                         mMovieViewModel.switchTopTopRatedMovies();
                         break;
+                    }
                     case STRING_FAVORITE_MOVIES: {
                         mMovieViewModel.switchToFavoriteMovies();
                         break;

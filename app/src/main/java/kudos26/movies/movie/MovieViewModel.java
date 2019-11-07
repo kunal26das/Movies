@@ -172,15 +172,11 @@ public class MovieViewModel extends AndroidViewModel {
         }
 
         void insertMovie(Movie movie) {
-            mExecutorService.submit(() -> {
-                mDao.insertMovie(movie);
-            });
+            mExecutorService.submit(() -> mDao.insertMovie(movie));
         }
 
         void deleteMovie(Movie movie) {
-            mExecutorService.submit(() -> {
-                mDao.deleteMovie(movie);
-            });
+            mExecutorService.submit(() -> mDao.deleteMovie(movie));
         }
 
         Movie isFavorite(final Movie movie) throws ExecutionException, InterruptedException {
